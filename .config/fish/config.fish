@@ -2,7 +2,7 @@
 set fish_greeting
 fish_vi_key_bindings
 
-# Stop some remote environments automatically setting these
+# Avoid some remote environments automatically setting these
 set -e GIT_COMITTER_NAME
 set -e GIT_AUTHOR_NAME
 set -e GIT_AUTHOR_EMAIL
@@ -21,8 +21,6 @@ alias ff="fzf --preview 'bat --style=numbers --color=always {}'"
 
 # Shortcut for lazygit
 alias lg="lazygit"
-alias yy="xsel --clipboard --input"
-alias pp="xsel --clipboard --output"
 
 # Config files
 alias v="$EDITOR ~/vimwiki/index.md"
@@ -32,7 +30,6 @@ alias cl="$EDITOR ~/.config/lazygit/config.yml"
 alias ch="$EDITOR ~/.config/hypr"
 alias cn="$EDITOR ~/.config/nvim"
 alias cm="$EDITOR ~/.config/nvim/lua/config/keymaps.vim"
-alias cx="$EDITOR ~/.xinitrc"
 
 # Mojo programming
 set -gx DISABLE_CHDIR 1
