@@ -1,26 +1,25 @@
+# Remove fish greeting and enable <esc> to activate vi mode
 set fish_greeting
 fish_vi_key_bindings
 
+# Stop some remote environments automatically setting these
 set -e GIT_COMITTER_NAME
 set -e GIT_AUTHOR_NAME
 set -e GIT_AUTHOR_EMAIL
 
+# Default editor
 set -gx EDITOR nvim
-set -gx VISUAL nvim
-set -gx GIT_EDITOR nvim
+set -gx VISUAL $EDITOR
+set -gx GIT_EDITOR $EDITOR
 
-set -gx DISABLE_CHDIR 1
-alias m="source ~/m.fish"
-
-# Omarchy
+# Omarchy bash replication
 alias ls='eza -lh --group-directories-first --icons=auto'
 alias lsa='ls -a'
 alias lt='eza --tree --level=2 --long --icons --git'
 alias lta='lt -a'
 alias ff="fzf --preview 'bat --style=numbers --color=always {}'"
 
-# Alias general
-alias code="nvim"
+# Shortcut for lazygit
 alias lg="lazygit"
 alias yy="xsel --clipboard --input"
 alias pp="xsel --clipboard --output"
@@ -35,12 +34,13 @@ alias cn="$EDITOR ~/.config/nvim"
 alias cm="$EDITOR ~/.config/nvim/lua/config/keymaps.vim"
 alias cx="$EDITOR ~/.xinitrc"
 
-# Mojo
+# Mojo programming
+set -gx DISABLE_CHDIR 1
+alias m="source ~/m.fish"
 alias mr="mojo run"
 alias mb="mojo build"
 alias mp="mojo package"
 alias ms="bazel run //:mojo-stdlib"
-alias msh="bazel build //:shmem"
 alias mi="bazel run //:install"
 
 switch (uname)
@@ -85,7 +85,7 @@ function nv
     end
 end
 
-# Nice time for last command to run format 
+# Pretty format duration last command took to run
 function format_duration -d "Format duration in milliseconds to human-readable time"
     # Check if CMD_DURATION is set and is a valid number
     if test -z "$CMD_DURATION" -o "$CMD_DURATION" -lt 0
@@ -123,6 +123,7 @@ function format_duration -d "Format duration in milliseconds to human-readable t
     end
 end
 
+# Prompt with vi status, git branch, and time last command took to run
 function fish_prompt
     # Check if we're in an SSH session
     if set -q SSH_CLIENT; or set -q SSH_TTY
