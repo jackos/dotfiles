@@ -1,0 +1,1 @@
+/home/jack/.config/omarchy/current/theme/neovim.lua
