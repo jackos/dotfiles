@@ -7,15 +7,29 @@ TERM = "xterm-256color"
 normal = { family = "CaskaydiaMono Nerd Font", style = "Regular" }
 bold = { family = "CaskaydiaMono Nerd Font", style = "Bold" }
 italic = { family = "CaskaydiaMono Nerd Font", style = "Italic" }
-size = 9
+size = 10
+
+[mouse]
+hide_when_typing = true
 
 [window]
 padding.x = 14
 padding.y = 14
-decorations = "None"
 opacity = 0.98
+decorations = "None"
+option_as_alt = "OnlyLeft"
+
+[scrolling]
+history = 100000
 
 [keyboard]
 bindings = [
-{ key = "F11", action = "ToggleFullscreen" }
+  { action = "ScrollPageUp", key = "PageUp" },
+  { action = "ScrollPageDown", key = "PageDown" },
+  { action = "First", key = "Home", mode = "Vi" },
+  { action = "Last", key = "End", mode = "Vi" },
 ]
+
+[terminal.shell]
+program = "/usr/bin/fish"
+args = ["-l"]

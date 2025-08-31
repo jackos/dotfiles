@@ -12,6 +12,13 @@ set -gx GIT_EDITOR nvim
 set -gx DISABLE_CHDIR 1
 alias m="source ~/m.fish"
 
+# Omarchy
+alias ls='eza -lh --group-directories-first --icons=auto'
+alias lsa='ls -a'
+alias lt='eza --tree --level=2 --long --icons --git'
+alias lta='lt -a'
+alias ff="fzf --preview 'bat --style=numbers --color=always {}'"
+
 # Alias general
 alias code="nvim"
 alias lg="lazygit"
