@@ -55,7 +55,7 @@ Enter diskpart to identify the correct partitions.
 
 The EFI boot partition you're looking for as of writing is 2048 MB and the `Type`  is `System`.
 
-The Windows partition you're looking for something that's multiple GB's and the `Type` is `Primary`:
+The Windows partition you're looking for should have many GB's and the `Type` is `Primary`.
 
 __WARNING: the disk numbers may not be in the order you expect!__
 
