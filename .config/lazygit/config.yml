@@ -1,0 +1,12 @@
+# https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
+
+git:
+  overrideGpg: true
+  disableForcePushing: false
+gui:
+  skipAmendWarning: true
+  skipDiscardChangeWarning: true
+  skipStashWarning: true
+  skipRewordInEditorWarning: true
+
+promptToReturnFromSubprocess: false

@@ -7,6 +7,7 @@
 /Templates
 /Videos
 /src
+/vimwiki
 
 /.XCompose
 /.bashrc
@@ -22,6 +23,7 @@
 /.profile
 /.ssh
 /.triton
+/.wget-hsts
 
 /.config/Signal
 /.config/Typora
