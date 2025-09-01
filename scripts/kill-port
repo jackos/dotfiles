@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+
+import psutil
+from sys import argv
+if len(argv) < 2:
+    print("Please provide a port number")
+
+port = int(argv[1])
+
+killed = False
+for proc in psutil.process_iter(['pid', 'name']):
+    try:
+        for conn in proc.connections(kind='inet'):
+            if conn.laddr.port == port:
+                print(f"Killing existing {proc.info['name']} with PID {proc.info['pid']} on port {port}")
+                proc.kill()
+                killed = True
+    except psutil.AccessDenied:
+        continue
+    except psutil.NoSuchProcess:
+        continue
+
+if not killed:
+    print("No process running on port:", port)

@@ -1,6 +1,11 @@
-# Remove fish greeting and enable <esc> to activate vi mode
+# Remove fish greeting
 set fish_greeting
+
+# Enable <esc> to activate vi mode
 fish_vi_key_bindings
+
+# Increase command history size
+set -g fish_history_max_entries 100000000
 
 # Avoid some remote environments automatically setting these
 set -e GIT_COMITTER_NAME
@@ -39,7 +44,32 @@ alias mb="mojo build"
 alias mp="mojo package"
 alias ms="bazel run //:mojo-stdlib"
 alias mi="bazel run //:install"
+alias msh="bazel build @mojo//:shmem"
+function mrun -d "Build Mojo file and run with MPI on all GPUs"
+    if test (count $argv) -ne 1
+        echo "Usage: mrun <filename.mojo>"
+        return 1
+    end
 
+    set -l mojo_file $argv[1]
+    set -l base_name (basename $mojo_file .mojo)
+
+    # Get number of GPUs
+    set -l num_gpus (nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
+
+    echo "Building $mojo_file..."
+    mojo build $mojo_file
+
+    if test $status -eq 0
+        echo "Running $base_name on $num_gpus GPUs..."
+        mpirun -n $num_gpus ./$base_name
+    else
+        echo "Build failed!"
+        return 1
+    end
+end
+
+# Platfrom specific aliases
 switch (uname)
     case Linux
         # arch linux
