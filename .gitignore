@@ -10,20 +10,24 @@
 /vimwiki
 
 /.XCompose
-/.bashrc
+/.bash_history
 /.bash_logout
 /.bash_profile
-/.bash_history
+/.bashrc
 /.cache
 /.claude*
+/.config/coderv2
 /.gitconfig
+/.gnupg
 /.local
 /.npm
 /.pki
 /.profile
+/.python_history
 /.ssh
 /.triton
 /.wget-hsts
+/m.fish
 
 /.config/Signal
 /.config/Typora
@@ -36,24 +40,22 @@
 /.config/fcitx
 /.config/fcitx5
 /.config/fish/fish_variables
-/.config/git/ignore
 /.config/fontconfig
-/.config/obs-studio
-/.config/uv
+/.config/git/ignore
 /.config/google-chrome
 /.config/ibus
 /.config/mako
 /.config/mise
 /.config/obs-studio
 /.config/omarchy
-/.config/omarchy/current
 /.config/omarchy.ttf
+/.config/omarchy/current
 /.config/pulse
 /.config/qalculate
 /.config/starship.toml
 /.config/systemd/user
-/.config/uv
 /.config/user-dirs.dirs
 /.config/user-dirs.locale
+/.config/uv
 /.config/xournalpp
 

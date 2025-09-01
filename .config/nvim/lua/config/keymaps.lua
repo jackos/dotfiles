@@ -9,7 +9,6 @@ local keybindings_all_modes = {
   { "<M-k>", "<C-w>k", "Focus window above" },
   { "<A-l>", "<C-w>l", "Focus window right" },
   { "<A-S-j>", ":split<CR>", "Split window below" },
-  { "<A-f>", "<leader>wm", "Maximize window toggle" },
   { "<C-h>", ":bprevious<CR>", "Previous Buffer" },
   { "<C-l>", ":bnext<CR>", "Next buffer" },
 }
@@ -40,13 +39,15 @@ end
 map("n", "<S-u>", "<C-r>", { desc = "Redo", unpack(sn) })
 
 -- snacks
-Snacks.toggle.zoom():map("<A-f>")
-map("t", "<A-f>", "<C-\\><C-n>", { desc = "Exit terminal to normal mode" })
-map("t", "<A-k>", "<C-\\><C-n><C-w>k", { desc = "Exit terminal to normal mode" })
-
 map(all_modes, "<A-t>", function()
   Snacks.terminal()
 end, { desc = "Toggle Terminal" })
+
+Snacks.toggle.zoom():map("<A-f>")
+
+map("t", "<A-k>", "<C-\\><C-n><C-w>k", { desc = "Window up from terminal" })
+map("t", "<A-esc>", "<C-\\><C-n>", { desc = "Exit terminal to normal mode" })
+map("t", "<A-f>", "<C-\\><C-n>", { desc = "Overwrite zoom to exit terminal mode first" })
 
 map("n", "<A-S-l>", ":vsplit<CR>", { desc = "Split window right" })
 

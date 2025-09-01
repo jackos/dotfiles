@@ -12,6 +12,9 @@ set -gx EDITOR nvim
 set -gx VISUAL $EDITOR
 set -gx GIT_EDITOR $EDITOR
 
+# Set SHELL to fish for e.g. install scripts
+set -gx SHELL (which fish)
+
 # Omarchy bash replication
 alias ls='eza -lh --group-directories-first --icons=auto'
 alias lsa='ls -a'
@@ -27,7 +30,7 @@ alias v="$EDITOR ~/vimwiki/index.md"
 alias ca="$EDITOR ~/.config/alacritty/alacritty.toml"
 alias cf="$EDITOR ~/.config/fish/config.fish"
 alias cl="$EDITOR ~/.config/lazygit/config.yml"
-alias ch="$EDITOR ~/.config/hypr"
+alias ch="$EDITOR ~/.config/hypr/bindings.conf"
 alias cn="$EDITOR ~/.config/nvim"
 alias cm="$EDITOR ~/.config/nvim/lua/config/keymaps.vim"
 
