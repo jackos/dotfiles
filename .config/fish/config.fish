@@ -33,7 +33,9 @@ alias cm="$EDITOR ~/.config/nvim/lua/config/keymaps.vim"
 
 # Mojo programming
 set -gx DISABLE_CHDIR 1
-alias m="source ~/m.fish"
+function m
+    source ~/m.fish
+end
 alias mr="mojo run"
 alias mb="mojo build"
 alias mp="mojo package"
