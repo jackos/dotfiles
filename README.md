@@ -9,7 +9,7 @@ Recommend picking and choosing what you want, don't copy everything across as I 
 Run:
 
 ```bash
-./scripts/omarchy-extras.sh
+./scripts/omarchy-extras
 ```
 
 The dependencies it adds:
@@ -48,7 +48,7 @@ Relevant files:
 To bind capslock to another layer, configure example at [~/supercaps.conf](./supercaps.conf) to your liking, then run:
 
 ```bash
-./scripts/supercaps.sh
+./scripts/supercaps
 ```
 
 ## Lazyvim
@@ -60,7 +60,7 @@ Many personal keybindings here that you likely won't want, but adds [multicursor
 Dotfiles can also work across remote instances of ubuntu and macos, many files are ignored but you can install dependencies such as fish and fd with:
 
 ```bash
-./scripts/ubuntu-extras.sh
+./scripts/ubuntu-extras
 ```
 
 Setup script for macos not there yet so install dependencies manually with brew.
@@ -68,7 +68,7 @@ Setup script for macos not there yet so install dependencies manually with brew.
 To get latest nvim prebuilt binary compatible with lazyvim run:
 
 ```bash
-./scripts/nvim-ubuntu-macos.sh
+./scripts/nvim-ubuntu-macos
 ```
 
 As both brew and apt install a version that isn't fully compatible.

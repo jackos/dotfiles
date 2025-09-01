@@ -1,0 +1,10 @@
+#!/bin/fish
+
+nvm install latest
+nvm use latest
+npm install -g @anthropic-ai/claude-code
+
+# Find npm path and add its directory to fish path
+set npm_path (which npm)
+set npm_dir (dirname $npm_path)
+fish_add_path $npm_dir

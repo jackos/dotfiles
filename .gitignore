@@ -14,8 +14,10 @@
 /.bash_profile
 /.bash_history
 /.cache
+/.claude*
 /.gitconfig
 /.local
+/.npm
 /.pki
 /.profile
 /.ssh
@@ -32,6 +34,7 @@
 /.config/fcitx
 /.config/fcitx5
 /.config/fish/fish_variables
+/.config/git/ignore
 /.config/fontconfig
 /.config/obs-studio
 /.config/uv
