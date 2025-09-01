@@ -16,7 +16,7 @@ The dependencies it adds:
 
 - fish: faster startup, and better completions
 - keyd: rebinds keys and works across wayland / X11 apps
-- google-chrome: share bookmarks across different OS's
+- google-chrome: used instead of chromium to share bookmarks with different platforms
 - uv: very fast python version, package, and tool manager
 
 ## Hyperland

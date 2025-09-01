@@ -43,23 +43,27 @@ alias mi="bazel run //:install"
 switch (uname)
     case Linux
         # arch linux
-        alias po="pacman -Qqe >~/pacman.pkg"
-        alias s="sudo pacman -S"
-        alias u="sudo pacman -Syuu"
-        alias r="sudo pacman -Rns"
+        alias s="yay -S"
+        alias u="yay -Syuu"
+        alias r="yay -Rns"
+
         alias relector-update="sudo reflector --verbose --latest 200 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist"
 
         # systemd
         alias ss="sudo systemctl start"
         alias us="systemctl --user start"
+        alias sr="sudo systemctl restart"
+        alias ur="systemctl --user restart"
         alias sstop="sudo systemctl stop"
         alias ustop="systemctl --user stop"
-        alias srestart="sudo systemctl restart"
-        alias urestart="systemctl --user restart"
         alias ureload="systemctl --user daemon-reload"
         alias sreload="sudo systemctl daemon-reload"
         alias sstat="sudo systemctl status"
         alias ustat="systemctl --user status"
+
+        # wayland
+        alias yy="wl-copy"
+        alias pp="wl-paste"
 end
 
 # Remote neovim terminal
