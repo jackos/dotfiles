@@ -27,8 +27,9 @@
 /.ssh
 /.triton
 /.wget-hsts
-/m.fish
+/.m.fish
 
+/.config/BraveSoftware
 /.config/Signal
 /.config/Typora
 /.config/brave-flags.conf

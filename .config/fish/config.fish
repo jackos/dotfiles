@@ -2,6 +2,10 @@
 set fish_greeting
 fish_vi_key_bindings
 
+###################
+# Global env vars
+###################
+
 # Avoid some remote environments automatically setting these
 set -e GIT_COMITTER_NAME
 set -e GIT_AUTHOR_NAME
@@ -14,6 +18,10 @@ set -gx GIT_EDITOR $EDITOR
 
 # Set SHELL to fish for e.g. install scripts
 set -gx SHELL (which fish)
+
+##################
+# Aliases
+##################
 
 # Omarchy bash replication
 alias ls='eza -lh --group-directories-first --icons=auto'
@@ -37,7 +45,7 @@ alias cm="$EDITOR ~/.config/nvim/lua/config/keymaps.vim"
 # Mojo programming
 set -gx DISABLE_CHDIR 1
 function m
-    source ~/m.fish
+    source ~/.m.fish
 end
 alias mr="mojo run"
 alias mb="mojo build"
@@ -71,7 +79,11 @@ switch (uname)
         alias pp="wl-paste"
 end
 
-# Initialize current work directory for nvim_remote_open script from alacritty
+##################
+# Neovim server
+##################
+
+# Initialize current work directory for `nvim_remote_open` script
 echo $PWD >/tmp/current-dir
 
 # Override cd to write the current directory, when changing dir in nvim terminal
@@ -96,6 +108,10 @@ function nvim
         command $real_nvim --listen $server_path $argv
     end
 end
+
+##################
+# Prompt
+##################
 
 # Pretty format duration last command took to run
 function format_duration -d "Format duration in milliseconds to human-readable time"
@@ -177,7 +193,11 @@ function fish_prompt
     echo
 end
 
-# remove path from sytem PATH by number
+###################
+# Path Manipulation
+###################
+
+# remove path from user paths added with 'fish_add_path'
 function fish_remove_path
     echo "Current fish_user_path entries:"
     echo "===================="
@@ -223,7 +243,7 @@ function fish_remove_path
     end
 end
 
-# remove path from sytem PATH by number
+# list all paths in system PATH
 function fish_list_paths
     echo "Current PATH entries:"
     echo "===================="
