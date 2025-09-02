@@ -2,18 +2,27 @@
 SERVER_PATH=/tmp/nvim-remote-server
 CURRENT_DIR=$(cat /tmp/current-dir)
 
-# Parse the file argument to extract file path and line number
+# Parse the file argument to extract file path, line number, and column number
 arg="$1"
 file_path=""
 line_num=""
+col_num=""
 
 # Check if the argument contains line info (contains colon)
 if [[ "$arg" == *:* ]]; then
-  # Split by first colon to get file and line
+  # Split by first colon to get file and rest
   file_path="${arg%%:*}"
-  line_num="${arg#*:}"
-  # Remove any additional colon-separated parts (like column number)
-  line_num="${line_num%%:*}"
+  rest="${arg#*:}"
+
+  # Check if there's a column number (second colon)
+  if [[ "$rest" == *:* ]]; then
+    line_num="${rest%%:*}"
+    col_num="${rest#*:}"
+    # Remove any additional parts after column
+    col_num="${col_num%%:*}"
+  else
+    line_num="$rest"
+  fi
 else
   file_path="$arg"
 fi
@@ -37,10 +46,26 @@ fi
 if [ -e $SERVER_PATH ]; then
   # If server exists then send file open command to it
   nvim --server $SERVER_PATH --remote $final_path
-  nvim --server $SERVER_PATH --remote-send "<A-k><A-l>:$line_num<CR>"
+
+  # Build the positioning command
+  if [[ -n "$line_num" && -n "$col_num" ]]; then
+    nvim --server $SERVER_PATH --remote-send "<A-k><A-l>:$line_num<CR>${col_num}|"
+  elif [[ -n "$line_num" ]]; then
+    nvim --server $SERVER_PATH --remote-send "<A-k><A-l>:$line_num<CR>"
+  fi
 else
   # Otherwise open nvim in a new window
   REAL_NVIM=$(which nvim)
-  alacritty -e fish -c "$REAL_NVIM --listen $SERVER_PATH $final_path +$line_num"
-  echo "$REAL_NVIM --listen $SERVER_PATH $final_path +$line_num" >/tmp/result-new
+
+  # Build the startup command with positioning
+  if [[ -n "$line_num" && -n "$col_num" ]]; then
+    startup_cmd="$REAL_NVIM --listen $SERVER_PATH $final_path +$line_num -c 'normal ${col_num}|'"
+  elif [[ -n "$line_num" ]]; then
+    startup_cmd="$REAL_NVIM --listen $SERVER_PATH $final_path +$line_num"
+  else
+    startup_cmd="$REAL_NVIM --listen $SERVER_PATH $final_path"
+  fi
+
+  alacritty -e fish -c "$startup_cmd"
+  echo "$startup_cmd" >/tmp/result-new
 fi

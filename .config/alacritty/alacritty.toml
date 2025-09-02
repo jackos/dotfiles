@@ -33,3 +33,24 @@ bindings = [
 [terminal.shell]
 program = "/usr/bin/fish"
 args = ["-l"]
+
+# This works in combination with ``~/.config/fish/fish.config`
+# and `~/scripts/nvim-remote-open` to enable nvim to open files
+# displayed in terminal in the existing editor by pressing ctrl+alt+o
+# and choosing the file. If no nvim instance is open it'll start
+# a terminal in a new window.
+[[hints.enabled]]
+command = "nvim-remote-open"
+hyperlinks = false
+post_processing = false
+persist = false
+mouse.enabled = true
+binding = { key = "O", mods = "Control|Shift|Alt" }
+# Regex to minimize false positives on filepaths
+# /*               Optionally start with forward slash
+# [a-zA-Z]+        Must start with a letter (remomves e.g. 4.0k)
+# [\\w_/-]*        Any combination of valid file path chars
+# \\.[\\w_/-]+     Contains a `.` and is followed by at least one valid char
+# :*[0-9]*:*[0-9]* Include file/line number if they exist
+regex = "/*[a-zA-Z]+[\\w_/-]*\\.[\\.\\w_/-]+:*[0-9]*:*[0-9]*"
+

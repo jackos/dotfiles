@@ -53,6 +53,18 @@ To bind capslock to another layer, configure example at [~/supercaps.conf](./sup
 
 Many personal keybindings here that you likely won't want, but has things such as [multicursor](.config/nvim/lua/plugins/multicursor.lua) setup. All keybindings are in [.config/nvim/lua/config/keymaps.lua](.config/nvim/lua/config/keymaps.lua).
 
+## Neovim Server
+
+Fish is set up to always open files in a nvim session if one is active, otherwise create one. Works from alacritty and nvim terminal.
+
+You can also enable an alacritty `ctrl+shift+alt+o` hotkey to open a displayed file in the active nvim session. You have to link the script to a path where alacritty can find it: `sudo ln -s scripts/nvim-remote-open /usr/bin/nvim-remote-open`.
+
+Relevant files:
+
+- [.config/fish/config.fish](.config/fish/config.fish): use a single nvim session, files open in the active session. Save directory path when navigating from nvim terminal.
+- [.config/alacritty/alacritty.toml](.config/alacritty/alacritty.toml): has a regex for selecting files, opens the file using the `nvim-remote-open` script.
+- [scripts/nvim-remote-open](scripts/nvim-remote-open): script called from alacritty to pass the current directory, filename, line and col number to the active nvim server.
+
 ## Dual boot Omarchy and Windows 11 on two hard drives
 
 See guide in [dual-boot-omarchy-windows.md](dual-boot-omarchy-windows.md), you need two separate hard drives to avoid manual setup not covered in the guide.
