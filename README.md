@@ -55,7 +55,7 @@ Many personal keybindings here that you likely won't want, but has things such a
 
 ## Dual boot Omarchy and Windows 11 on two hard drives
 
-See guide in [./dual-boot-omarchy-windows.md](dual-boot-omarchy-windows.md), you need two separate hard drives to avoid manual setup not covered in the guide.
+See guide in [dual-boot-omarchy-windows.md](dual-boot-omarchy-windows.md), you need two separate hard drives to avoid manual setup not covered in the guide.
 
 ## Ubuntu and macos
 
