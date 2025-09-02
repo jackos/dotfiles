@@ -45,7 +45,7 @@ end, { desc = "Toggle Terminal" })
 
 Snacks.toggle.zoom():map("<A-f>")
 
-map("t", "<A-k>", "<C-\\><C-n><C-w>k", { desc = "Window up from terminal" })
+map("t", "<A-k>", "<C-\\><C-n><C-w>k<C-w>l", { desc = "Window up and right from terminal" })
 map("t", "<A-esc>", "<C-\\><C-n>", { desc = "Exit terminal to normal mode" })
 map("t", "<A-f>", "<C-\\><C-n>", { desc = "Overwrite zoom to exit terminal mode first" })
 
