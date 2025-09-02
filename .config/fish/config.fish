@@ -71,17 +71,29 @@ switch (uname)
         alias pp="wl-paste"
 end
 
-# Makes neovim terminal commands such as `nv filename.txt` open the file in existing instance
-function nv
-    # Check if we're already inside a Neovim terminal
-    if test -n "$NVIM"
-        # We're inside Neovim, open on file in existing instance
-        command nvim --server $NVIM --remote realpath($argv)
+# Initialize current work directory for nvim_remote_open script from alacritty
+echo $PWD >/tmp/current-dir
+
+# Override cd to write the current directory, when changing dir in nvim terminal
+function cd
+    builtin cd $argv
+    echo $PWD >/tmp/current-dir
+end
+
+# Open files e.g.`nvim filename.txt` in existing nvim instance if it exists
+function nvim
+    set -l server_path /tmp/nvim-remote-server
+    set -l real_nvim (which nvim)
+
+    # If server already started and single arg
+    if test -e $server_path; and test (count $argv) -eq 1
+        # Open on file in existing instance
+        command $real_nvim --server $server_path --remote (realpath $argv)
         # Focus up and to the right, if file explorer is open
-        command nvim --server $NVIM --remote-send '<A-k><A-l>'
+        command $real_nvim --server $server_path --remote-send '<A-k><A-l>'
     else
-        # Else run nvim normally
-        command nvim $argv
+        # Else run nvim and start server
+        command $real_nvim --listen $server_path $argv
     end
 end
 
@@ -163,4 +175,50 @@ function fish_prompt
     set -l duration (format_duration)
     echo -s (set_color green) " $duration" (set_color normal)
     echo
+end
+
+# remove path from sytem PATH by number
+function fish_remove_path
+    echo "Current fish_user_path entries:"
+    echo "===================="
+
+    set -l counter 1
+    for path_entry in $fish_user_paths
+        echo "[$counter] $path_entry"
+        set counter (math $counter + 1)
+    end
+
+    echo ""
+    read -P "Enter number to remove (or 'q' to quit): " choice
+
+    if test "$choice" = q
+        echo "Exiting..."
+        return 0
+    end
+
+    # Validate input is a number
+    if not string match -qr '^\d+$' "$choice"
+        echo "Error: Please enter a valid number"
+        return 1
+    end
+
+    set -l total (count $PATH)
+
+    if test $choice -gt $total -o $choice -lt 1
+        echo "Error: Number must be between 1 and $total"
+        return 1
+    end
+
+    set -l path_to_remove $fish_user_paths[$choice]
+    echo ""
+    echo "Removing fish user path: $path_to_remove"
+    echo ""
+
+    # Try fish_add_path -r first (works for paths added with fish_add_path)
+    if set -e fish_user_paths[$choice] 2>/dev/null
+        echo "✓ Successfully removed with fish_add_path"
+        return
+    else
+        echo "fish path removal failed"
+    end
 end
