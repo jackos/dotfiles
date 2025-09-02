@@ -71,23 +71,17 @@ switch (uname)
         alias pp="wl-paste"
 end
 
-# Remote neovim terminal
+# Makes neovim terminal commands such as `nv filename.txt` open the file in existing instance
 function nv
     # Check if we're already inside a Neovim terminal
     if test -n "$NVIM"
-        # We're inside Neovim, use native --remote to open in parent
-        command nvim --server $NVIM --remote $argv
+        # We're inside Neovim, open on file in existing instance
+        command nvim --server $NVIM --remote realpath($argv)
+        # Focus up and to the right, if file explorer is open
+        command nvim --server $NVIM --remote-send '<A-k><A-l>'
     else
-        # Try to find a running Neovim instance
-        set -l servers (command nvim --serverlist)
-        if test -n "$servers"
-            # Use the first available server
-            set -l server (echo $servers | string split '\n' | head -n1)
-            command nvim --server $server --remote $argv
-        else
-            # No server found, start new instance with a server name
-            command nvim --listen ~/.cache/nvim/server.pipe $argv
-        end
+        # Else run nvim normally
+        command nvim $argv
     end
 end
 
