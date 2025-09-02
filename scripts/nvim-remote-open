@@ -1,0 +1,16 @@
+#!/bin/bash
+
+SERVER_PATH=/tmp/nvim-remote-server
+CURRENT_DIR=$(cat /tmp/current-dir)
+
+if [ -e $SERVER_PATH ]; then
+  # If server exists than send file open command to it
+  nvim --server $SERVER_PATH --remote "$CURRENT_DIR/$@"
+  nvim --server $SERVER_PATH --remote-send '<A-k><A-l>'
+
+else
+  # Otherwise open nvim in a new window
+  REAL_NVIM=$(which nvim)
+  alacritty -e fish -c "$REAL_NVIM --listen $SERVER_PATH $CURRENT_DIR/$@"
+  echo "$REAL_NVIM --listen $SERVER_PATH $CURRENT_DIR/$@" >/tmp/result
+fi
