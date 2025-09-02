@@ -222,3 +222,15 @@ function fish_remove_path
         echo "fish path removal failed"
     end
 end
+
+# remove path from sytem PATH by number
+function fish_list_paths
+    echo "Current PATH entries:"
+    echo "===================="
+
+    set -l counter 1
+    for path_entry in $PATH
+        echo "[$counter] $path_entry"
+        set counter (math $counter + 1)
+    end
+end
