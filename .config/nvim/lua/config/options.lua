@@ -18,3 +18,21 @@ vim.api.nvim_create_autocmd("LspDetach", {
     end, 1000)
   end,
 })
+
+vim.opt.clipboard = "unnamedplus"
+
+vim.g.clipboard = {
+  name = "OSC 52",
+  copy = {
+    ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+    ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+  },
+  paste = {
+    ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+    ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+  },
+}
+
+vim.keymap.set({ "n", "v" }, "y", '"+y')
+vim.keymap.set({ "n", "v" }, "Y", '"+Y')
+vim.keymap.set({ "n", "v" }, "yy", '"+yy')
