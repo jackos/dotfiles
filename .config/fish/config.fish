@@ -12,9 +12,15 @@ set -e GIT_AUTHOR_NAME
 set -e GIT_AUTHOR_EMAIL
 
 # Default editor
-set -gx EDITOR nvim
+set -gx EDITOR code
 set -gx VISUAL $EDITOR
-set -gx GIT_EDITOR $EDITOR
+set -gx GIT_EDITOR $EDITOR --wait
+
+# Default the version of node nvm uses
+set -U nvm_default_version 24.10.0
+
+# Default the version of node nvm uses
+set -U nvm_default_version 24.10.0
 
 # Set SHELL to fish for e.g. install scripts
 set -gx SHELL (which fish)
@@ -44,9 +50,6 @@ alias cm="$EDITOR ~/.config/nvim/lua/config/keymaps.vim"
 
 # Mojo programming
 set -gx DISABLE_CHDIR 1
-function m
-    source ~/.m.fish
-end
 alias mr="mojo run"
 alias mb="mojo build"
 alias mp="mojo package"
@@ -77,36 +80,6 @@ switch (uname)
         # wayland
         alias yy="wl-copy"
         alias pp="wl-paste"
-end
-
-##################
-# Neovim server
-##################
-
-# Initialize current work directory for `nvim_remote_open` script
-echo $PWD >/tmp/current-dir
-
-# Override cd to write the current directory, when changing dir in nvim terminal
-function cd
-    builtin cd $argv
-    echo $PWD >/tmp/current-dir
-end
-
-# Open files e.g.`nvim filename.txt` in existing nvim instance if it exists
-function nvim
-    set -l server_path /tmp/nvim-remote-server
-    set -l real_nvim (which nvim)
-
-    # If server already started and single arg
-    if test -e $server_path; and test (count $argv) -eq 1
-        # Open on file in existing instance
-        command $real_nvim --server $server_path --remote (realpath $argv)
-        # Focus up and to the right, if file explorer is open
-        command $real_nvim --server $server_path --remote-send '<A-k><A-l>'
-    else
-        # Else run nvim and start server
-        command $real_nvim --listen $server_path $argv
-    end
 end
 
 ##################
