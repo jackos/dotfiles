@@ -1,6 +1,11 @@
+.DS_Store
+
+/Applications
 /Desktop
 /Documents
 /Downloads
+/Library
+/Movies
 /Music
 /Pictures
 /Public
@@ -17,6 +22,7 @@
 /.cargo
 /.claude*
 /.config/coderv2
+/.config/configstore
 /.dotnet
 /.fzf*
 /.gitconfig
@@ -52,6 +58,7 @@
 /.config/fcitx5
 /.config/fish/conf.d
 /.config/fish/fish_variables
+/.config/fish/func
 /.config/fish/functions/fish_user_key_bindings.fish
 /.config/fontconfig
 /.config/gh
@@ -69,10 +76,17 @@
 /.config/pulse
 /.config/qalculate
 /.config/Signal
-/.config/starship.toml
 /.config/systemd/user
 /.config/Typora
 /.config/user-dirs.dirs
 /.config/user-dirs.locale
 /.config/uv
 /.config/xournalpp
+/.config/zed/prompts
+/.modular
+/.modular-internal
+/.node_repl_history
+/.rustup
+/.vscode
+/.zsh_sessions
+/start-*
