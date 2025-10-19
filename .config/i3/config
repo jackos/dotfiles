@@ -1,0 +1,252 @@
+# apps
+#exec --no-startup-id feh --bg-tile ~/img/wallpapers/space-widescreen.jpg
+#exec_always --no-startup-id fish ~/.config/polybar/launch.fish &
+
+# bluetooth
+#exec --no-startup-id blueberry-tray 
+#exec --no-startup-id bluetooth-autoconnect 
+
+# num lock activated
+#exec_always --no-startup-id numlockx on
+
+# variables
+set $mod Mod4
+set $alt Mod1
+set $left h
+set $down j
+set $up k
+set $right l
+
+# resize window
+bindsym $mod+r mode "resize"
+mode "resize" {
+    # These bindings trigger as soon as you enter the resize mode
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+
+    # back to normal: Enter or Escape or $mod+r
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+
+# Workspaces
+bindsym $mod+c workspace code
+bindsym $mod+b workspace browser
+bindsym $mod+m workspace media
+bindsym $mod+i workspace in
+bindsym $mod+o workspace out
+bindsym $mod+$alt+c move container to workspace code
+bindsym $mod+$alt+b move container to workspace browser
+bindsym $mod+$alt+m move container to workspace media
+bindsym $mod+$alt+i move container to workspace in
+bindsym $mod+$alt+o move container to workspace out
+bindsym $mod+f fullscreen toggle
+
+# rofi
+bindsym $mod+g exec --no-startup-id rofi -show drun
+bindsym $mod+q exec i3-msg exit
+bindsym $mod+e exec --no-startup-id rofi -show emoji
+bindsym $mod+control+x exec --no-startup-id ~/.config/rofi/scripts/powermenu
+bindsym $mod+v exec --no-startup-id clipmenu
+
+# Misc
+bindsym $mod+Shift+x exec --no-startup-id ~/.config/i3lock/i3lock.sh
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+c reload
+bindsym $mod+x kill
+floating_modifier $mod
+bindsym $mod+$alt+space floating toggle
+
+# settings
+default_orientation horizontal
+
+# switch to workspace with urgent window automatically
+for_window [urgent=latest] focus
+
+# Font for window titles
+font pango:Hack 11
+
+# external programs
+bindsym F3 exec `sh -c 'firefox "https://www.google.com/search?q=$(xclip -o)"'`
+bindsym F4 exec `nvim --server /tmp/nvim.sock --remote-send ":tabnew $(xclip -o)<CR>"`
+
+# movement
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+
+# move focused window
+bindsym $mod+$alt+$left move left 20 px
+bindsym $mod+$alt+$down move down 20 px
+bindsym $mod+$alt+$up move up 20 px
+bindsym $mod+$alt+$right move right 20 px
+
+# container management
+# bindsym $mod+$alt+bracketleft layout stacking
+# bindsym $mod+$alt+p layout tabbed
+# bindsym $mod+$alt+bracketright layout toggle split
+# bindsym $mod+bracketright focus parent
+# bindsym $mod+bracketleft focus child
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# Authentication dialog
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+
+
+# terminal
+bindsym $mod+Return split h exec foot
+bindsym $mod+minus split v exec --no-startup-id xterm;focus
+
+# system monitor
+bindsym control+Shift+Escape exec --no-startup-id xfce4-taskmanager;focus
+
+# file explorer
+bindsym $mod+$alt+Return exec --no-startup-id wezterm start -- joshuto;focus 
+
+#xkill
+bindsym --release $mod+Escape exec xkill
+
+# Spotify
+bindsym $mod+F10 exec --no-startup-id spotify;focus
+
+# Screenshot 
+bindsym $mod+s exec gnome-screenshot -i
+
+# Floating/Tiled
+
+#floating enabled from some programs - find with xprop
+
+for_window [class="bevy_game"] floating enable
+for_window [class="Arcolinux-welcome-app.py"] floating enable
+#for_window [class="Arcolinux-tweak-tool.py"] floating enable
+for_window [class="Arcolinux-calamares-tool.py"] floating enable
+for_window [class="Blueberry.py"] floating enable
+for_window [class="Galculator"] floating enable
+for_window [class="Gnome-disks"] floating enable
+for_window [class="^Gnome-font-viewer$"] floating enable
+for_window [class="^Gpick$"] floating enable
+for_window [class="Hexchat"] floating disable
+for_window [class="Imagewriter"] floating enable
+for_window [class="Font-manager"] floating enable
+for_window [class="qt5ct|Lxappearance"] floating enable
+for_window [class="Nitrogen"] floating enable
+for_window [class="Pavucontrol"] floating disable
+for_window [class="Peek"] floating enable
+for_window [class="^Spotify$"] floating disable
+for_window [class="System-config-printer.py"] floating enable
+for_window [class="Unetbootin.elf"] floating enable
+for_window [class="Usb-creator-gtk"] floating enable
+for_window [class="^Vlc$"] floating disable
+for_window [class="Wine"] floating disable
+for_window [class="Xfburn"] floating disable
+for_window [class="Xfce4-appfinder"] floating enable
+for_window [class="Xfce4-settings-manager"] floating disable
+for_window [class="Xfce4-taskmanager"] floating enable
+for_window [instance="variety"] floating enable
+for_window [title="Copying"] floating enable
+for_window [title="Deleting"] floating enable
+for_window [title="Moving"] floating enable
+for_window [title="^Terminator Preferences$"] floating enable
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="^Preferences$"] floating enable
+for_window [window_role="setup"] floating` enable
+for_window [class="zoom"] floating enable
+for_window [title="Zoom Meeting"] floating disable
+for_window [class="Pavucontrol|pavucontrol"] floating enable
+
+# Use pactl to adjust volume in PulseAudio.
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+
+# Media player controls
+bindsym XF86AudioPlay exec dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
+bindsym XF86AudioNext exec dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
+bindsym XF86AudioPrev exec dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
+
+# bindsym XF86MonBrightnessUp exec --no-startup-id xbacklight -inc 10
+# bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -dec 10
+
+# Border control
+hide_edge_borders both
+#bindsym $mod+shift+b exec --no-startup-id i3-msg border toggle
+
+#new_window pixel 2
+#new_window normal
+#new_window none
+
+#new_float pixel 2
+#new_float normal
+#new_float none
+
+# gaps inner 2
+# smart_gaps on
+# smart_borders on
+for_window [class="^.*"] border pixel 0
+#for_window [class="^.*"] border pixel 2
+#for_window [class="firefox"] border pixel 2
+#for_window [instance="script-fu"] border normal
+
+# Popups
+#Popups during fullscreen mode
+popup_during_fullscreen smart
+
+# i3 Gaps Change Mode
+
+set $mode_gaps Gaps: (o) outer, (i) inner
+set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
+set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
+bindsym $mod+Shift+g mode "$mode_gaps"
+
+mode "$mode_gaps" {
+        bindsym o      mode "$mode_gaps_outer"
+        bindsym i      mode "$mode_gaps_inner"
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+mode "$mode_gaps_inner" {
+        bindsym plus  gaps inner current plus 5
+        bindsym minus gaps inner current minus 5
+        bindsym 0     gaps inner current set 0
+
+        bindsym Shift+plus  gaps inner all plus 5
+        bindsym Shift+minus gaps inner all minus 5
+        bindsym Shift+0     gaps inner all set 0
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+mode "$mode_gaps_outer" {
+        bindsym plus  gaps outer current plus 5
+        bindsym minus gaps outer current minus 5
+        bindsym 0     gaps outer current set 0
+
+        bindsym Shift+plus  gaps outer all plus 5
+        bindsym Shift+minus gaps outer all minus 5
+        bindsym Shift+0     gaps outer all set 0
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+# Picom
+## transparency 
+exec_always --no-startup-id picom --config ~/.config/picom/picom.conf
+
+## TOKYO NIGHT
+# class                 border  backgr. text    indicator
+client.focused          #88afff #88afff #16161e #88afff
+client.unfocused        #24283b #24283b #c0caf5 #24283b
+client.focused_inactive #24283b #24283b #c0caf5 #24283b
+client.placeholder      #222222 #222222 #c0caf5 #222222
+client.urgent           #f7768e #f7768e #16161e #f7768e
+client.background       #16161e
+

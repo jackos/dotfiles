@@ -1,0 +1,147 @@
+theme = "tokyonight"
+
+[editor]
+idle-timeout = 0
+rulers = [100]
+auto-format = true
+bufferline = "always"
+# Minimum severity to show a diagnostic after the end of a line:
+end-of-line-diagnostics = "hint"
+
+[editor.inline-diagnostics]
+cursor-line = "error"
+other-lines = "error"
+
+[editor.auto-pairs]
+'{' = '}'
+
+[editor.cursor-shape]
+insert = "bar"
+
+[editor.lsp]
+display-messages = true
+
+[editor.file-picker]
+hidden = false
+parents = false
+
+[keys.normal]
+A-h = "jump_view_left"
+A-l = "jump_view_right"
+A-j = "jump_view_down"
+A-k = "jump_view_up"
+A-n = "later"
+A-b = "earlier"
+A-L = "vsplit"
+A-i = "hover"
+"home" = ["select_mode", "goto_line_start"]
+"end" = ["select_mode", "goto_line_end"]
+"S-home" = ["select_mode", "goto_line_start"]
+"S-end" = ["select_mode", "goto_line_end"]
+# "e" = ["select_mode", "move_next_word_end"]
+# "b" = ["select_mode", "move_prev_word_start"]
+# "w" = ["select_mode", "move_next_word_start"]
+# "E" = ["select_mode", "move_next_long_word_end"]
+# "B" = ["select_mode", "move_prev_long_word_start"]
+# "W" = ["select_mode", "move_next_long_word_start"]
+C-d = ["half_page_down", "goto_window_bottom"]
+C-u = ["half_page_up", "goto_window_top"]
+G = "goto_last_line"
+x = ["yank_joined_to_clipboard", "delete_selection"]
+d = ["delete_selection"]
+C-c = ":q"
+A-w = ":q"
+A-c = "toggle_comments"
+C-s = ":w"
+A-f = "flip_selections"
+y = "yank_joined_to_clipboard"
+A-d = "delete_selection_noyank"
+p = "paste_clipboard_after"
+P = "paste_clipboard_before"
+';' = "repeat_last_motion"
+"esc" = ["collapse_selection", "normal_mode", "keep_primary_selection"]
+"A-r" = [":config-reload", ":reload"]
+V = ["extend_line", "select_mode"]
+"C-l" = ":buffer-next"
+"C-w" = ":buffer-close"
+"C-h" = ":buffer-previous"
+g = { "t" = "goto_type_definition" }
+
+[keys.normal."space"]
+"space" = ["extend_line", "select_mode"]
+f = "file_picker_in_current_directory"
+F = "file_picker"
+d = "workspace_diagnostics_picker"
+D = "diagnostics_picker"
+
+[keys.normal."space".c]
+h = ":open ~/.config/helix/config.toml"
+H = ":open ~/.config/helix"
+f = ":open ~/.config/fish/config.fish"
+a = ":open ~/.config/alacritty/alacritty.yml"
+b = ":open ~/.config/waybar"
+c = ":open ~/.cargo/config.toml"
+i = ":open ~/.config/i3/config"
+s = ":open ~/.config/sway/config"
+m = ":open ~/.config/nvim/config/mappings.vim"
+v = ":open ~/.config/nvim/README.md"
+l = ":open ~/.config/leftwm/config.toml"
+n = ":open ~/.config/nushell/config.nu"
+e = ":open ~/.config/nushell/env.nu"
+x = ":open ~/.xinitrc"
+z = ":open ~/.zshrc"
+g = ":open ~/.config/ghostty/config"
+
+[keys.select]
+# "e" = ["select_mode", "move_next_word_end"]
+# "b" = ["select_mode", "move_prev_word_start"]
+# "w" = ["select_mode", "move_next_word_start"]
+# "E" = ["select_mode", "move_next_long_word_end"]
+# "B" = ["select_mode", "move_prev_long_word_start"]
+# "W" = ["select_mode", "move_next_long_word_start"]
+I = ["split_selection_on_newline", "insert_at_line_start"]
+A = ["split_selection_on_newline", "insert_at_line_end"]
+C-d = ["half_page_down", "goto_window_bottom"]
+C-u = ["half_page_up", "goto_window_top"]
+A-i = "hover"
+A-h = "jump_view_left"
+A-l = "jump_view_right"
+A-j = "jump_view_down"
+A-k = "jump_view_up"
+A-n = "vsplit"
+A-b = "hsplit"
+C-c = ":q"
+A-w = ":q"
+A-c = "toggle_comments"
+C-s = ":w"
+A-f = "flip_selections"
+V = ["extend_line"]
+y = "yank_joined_to_clipboard"
+d = ["delete_selection"]
+x = ["yank_joined_to_clipboard", "delete_selection"]
+A-d = "delete_selection_noyank"
+c = "change_selection_noyank"
+p = "paste_clipboard_after"
+P = "paste_clipboard_before"
+';' = "repeat_last_motion"
+"esc" = ["collapse_selection", "normal_mode"]
+"A-r" = [":config-reload", ":reload"]
+"S" = "split_selection_on_newline"
+"home" = ["goto_line_start"]
+"end" = ["goto_line_end"]
+"S-home" = ["goto_line_start"]
+"S-end" = ["goto_line_end"]
+space = { "space" = [
+    "extend_line",
+    "select_mode",
+], f = "file_picker_in_current_directory", F = "file_picker", c = "toggle_comments" }
+
+[keys.insert]
+C-d = ["half_page_down", "goto_window_bottom"]
+C-u = ["half_page_up", "goto_window_top"]
+A-i = "hover"
+C-s = ":w"
+"A-." = "completion"
+A-c = "toggle_comments"
+"esc" = ["normal_mode"]
+"A-r" = [":config-reload", ":reload"]

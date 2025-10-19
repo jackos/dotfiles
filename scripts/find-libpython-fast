@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+import os
+import sys
+from pathlib import Path
+from sysconfig import get_config_var as var
+
+is_windows = os.name == "nt"
+if is_windows:
+    ext = "dll"
+elif os.name == "posix":
+    ext = "dylib" if sys.platform == "darwin" else "so"
+
+pyver = var("py_version_short")
+folders = [Path(var('LIBPL')), Path(var('LIBDIR'))]
+binaries = [var('LDLIBRARY'), f"libpython{pyver}.{ext}"]
+patterns = [f"libpython*{pyver}*.[s,d]*", "libpython*"]
+
+# First checks are quick and very commonly work, a combination of four options
+for folder in folders:
+    for binary in binaries:
+        full_path = folder / binary
+        if full_path.exists() and full_path.is_file():
+            print(full_path)
+            exit(0)
+
+# Slower backup checks for pesky environments that don't have correct sysconfig
+for pattern in patterns:
+    for libpython_glob in folder.glob(pattern):
+        for folder in folders:
+            full_path = folder / libpython_glob
+            if full_path.exists() and full_path.is_file():
+                print(full_path)
+                exit(0)
+exit(1)

@@ -1,0 +1,42 @@
+# Language support configuration.
+# See the languages documentation: https://docs.helix-editor.com/master/languages.html
+# use-grammars = { only = [ "mojo"] }
+
+# [language-server]
+# mojo = { command = "mojo-lsp-server" }
+# rust = { command = "rust-analyzer" }
+
+[[language]]
+name = "mojo"
+scope = "source.mojo"
+file-types = ["mojo", "🔥"]
+injection-regex = "mojo"
+# comment-tokens = "#"
+indent = { tab-width = 4, unit = "    " }
+language-servers = ["mojo"]
+roots = []
+
+[[grammar]]
+name = "mojo"
+source = { git = "https://github.com/garam-kim1/tree-sitter-mojo.git", rev = "62b598275f340f5716d30943275f587398fe9ede" }
+
+
+oots = []
+[language-server.rust-analyzer.config.check]
+command = "clippy"
+# [language.debugger]
+# command = "codelldb"
+# name = "codelldb"
+# port-arg = "--port {}"
+# transport = "tcp"
+
+# [[language.debugger.templates]]
+# name = "binary"
+# request = "launch"
+# [[language.debugger.templates.completion]]
+# completion = "filename"
+# name = "binary"
+
+# [language.debugger.templates.args]
+# program = "{0}"
+# runInTerminal = true

@@ -1,17 +1,14 @@
-# Remove fish greeting and enable <esc> to activate vi mode
 set fish_greeting
 fish_vi_key_bindings
 
-###################
-# Global env vars
-###################
+# Fish history configuration - increase history size
+set -g fish_history_max_entries 100000000  # Maximum number of history entries (default is ~256000)
+set -g fish_history_ignore_duplicates 1 # Ignore duplicate entries
 
-# Avoid some remote environments automatically setting these
 set -e GIT_COMITTER_NAME
 set -e GIT_AUTHOR_NAME
 set -e GIT_AUTHOR_EMAIL
 
-# Default editor
 set -gx EDITOR code
 set -gx VISUAL $EDITOR
 set -gx GIT_EDITOR $EDITOR --wait
@@ -19,67 +16,84 @@ set -gx GIT_EDITOR $EDITOR --wait
 # Default the version of node nvm uses
 set -U nvm_default_version 24.10.0
 
-# Default the version of node nvm uses
-set -U nvm_default_version 24.10.0
-
-# Set SHELL to fish for e.g. install scripts
-set -gx SHELL (which fish)
-
-##################
-# Aliases
-##################
-
-# Omarchy bash replication
-alias ls='eza -lh --group-directories-first --icons=auto'
-alias lsa='ls -a'
-alias lt='eza --tree --level=2 --long --icons --git'
-alias lta='lt -a'
-alias ff="fzf --preview 'bat --style=numbers --color=always {}'"
-
-# Shortcut for lazygit
+# Alias general
+alias code="code"
 alias lg="lazygit"
+alias yy="xsel --clipboard --input"
+alias pp="xsel --clipboard --output"
 
 # Config files
 alias v="$EDITOR ~/vimwiki/index.md"
+alias cw="$EDITOR ~/.config/wezterm/wezterm.lua"
 alias ca="$EDITOR ~/.config/alacritty/alacritty.toml"
 alias cf="$EDITOR ~/.config/fish/config.fish"
+alias cne="$EDITOR ~/.config/nushell/env.nu"
+alias ci="$EDITOR ~/.config/i3/config"
 alias cl="$EDITOR ~/.config/lazygit/config.yml"
-alias ch="$EDITOR ~/.config/hypr/bindings.conf"
-alias cn="$EDITOR ~/.config/nvim"
+alias cs="$EDITOR ~/.config/sway/config"
 alias cm="$EDITOR ~/.config/nvim/lua/config/keymaps.vim"
+alias ch="$EDITOR ~/.config/helix"
+alias cn="$EDITOR ~/.config/nvim"
+alias cx="$EDITOR ~/.xinitrc"
+alias cz="$EDITOR ~/.config/zellij/config.yaml"
 
-# Mojo programming
-set -gx DISABLE_CHDIR 1
+# Mojo
 alias mr="mojo run"
 alias mb="mojo build"
 alias mp="mojo package"
 alias ms="bazel run //:mojo-stdlib"
-alias mi="bazel run //:install"
+alias msh="bazel build @mojo//:shmem"
+
+# Function to build and run Mojo file with MPI
+function mrun -d "Build Mojo file and run with MPI on all GPUs"
+    if test (count $argv) -ne 1
+        echo "Usage: mrun <filename.mojo>"
+        return 1
+    end
+    
+    set -l mojo_file $argv[1]
+    set -l base_name (basename $mojo_file .mojo)
+    
+    # Get number of GPUs
+    set -l num_gpus (nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
+    
+    echo "Building $mojo_file..."
+    mojo build $mojo_file
+    
+    if test $status -eq 0
+        echo "Running $base_name on $num_gpus GPUs..."
+        mpirun -n $num_gpus ./$base_name
+    else
+        echo "Build failed!"
+        return 1
+    end
+end
 
 switch (uname)
     case Linux
+        # general
+        alias fd="fdfind"
         # arch linux
-        alias s="yay -S"
-        alias u="yay -Syuu"
-        alias r="yay -Rns"
-
+        alias po="pacman -Qqe >~/pacman.pkg"
+        alias s="sudo pacman -S"
+        alias u="sudo pacman -Syuu"
+        alias r="sudo pacman -Rns"
         alias relector-update="sudo reflector --verbose --latest 200 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist"
 
         # systemd
+        alias mod="xmodmap ~/.Xmodmap"
+        alias sdaemon="sudo systemctl daemon-reload"
+        alias sudaemon="sudo systemctl --user daemon-reload"
+        alias sstatus="sudo systemctl status"
+        alias senable="sudo systemctl enable"
+        alias suenable="systemctl --user enable"
+        alias sustatus="systemctl --user status"
+        alias srestart="sudo systemctl restart"
+        alias surestart="systemctl --user restart"
         alias ss="sudo systemctl start"
-        alias us="systemctl --user start"
-        alias sr="sudo systemctl restart"
-        alias ur="systemctl --user restart"
+        alias sus="systemctl --user start"
         alias sstop="sudo systemctl stop"
-        alias ustop="systemctl --user stop"
-        alias ureload="systemctl --user daemon-reload"
-        alias sreload="sudo systemctl daemon-reload"
-        alias sstat="sudo systemctl status"
-        alias ustat="systemctl --user status"
-
-        # wayland
-        alias yy="wl-copy"
-        alias pp="wl-paste"
+        alias sustop="systemctl --user stop"
 end
 
 ##################
@@ -124,7 +138,6 @@ function format_duration -d "Format duration in milliseconds to human-readable t
     end
 end
 
-# Prompt with vi status, git branch, and time last command took to run
 function fish_prompt
     # Check if we're in an SSH session
     if set -q SSH_CLIENT; or set -q SSH_TTY
@@ -164,66 +177,4 @@ function fish_prompt
     set -l duration (format_duration)
     echo -s (set_color green) " $duration" (set_color normal)
     echo
-end
-
-###################
-# Path Manipulation
-###################
-
-# remove path from user paths added with 'fish_add_path'
-function fish_remove_path
-    echo "Current fish_user_path entries:"
-    echo "===================="
-
-    set -l counter 1
-    for path_entry in $fish_user_paths
-        echo "[$counter] $path_entry"
-        set counter (math $counter + 1)
-    end
-
-    echo ""
-    read -P "Enter number to remove (or 'q' to quit): " choice
-
-    if test "$choice" = q
-        echo "Exiting..."
-        return 0
-    end
-
-    # Validate input is a number
-    if not string match -qr '^\d+$' "$choice"
-        echo "Error: Please enter a valid number"
-        return 1
-    end
-
-    set -l total (count $PATH)
-
-    if test $choice -gt $total -o $choice -lt 1
-        echo "Error: Number must be between 1 and $total"
-        return 1
-    end
-
-    set -l path_to_remove $fish_user_paths[$choice]
-    echo ""
-    echo "Removing fish user path: $path_to_remove"
-    echo ""
-
-    # Try fish_add_path -r first (works for paths added with fish_add_path)
-    if set -e fish_user_paths[$choice] 2>/dev/null
-        echo "✓ Successfully removed with fish_add_path"
-        return
-    else
-        echo "fish path removal failed"
-    end
-end
-
-# list all paths in system PATH
-function fish_list_paths
-    echo "Current PATH entries:"
-    echo "===================="
-
-    set -l counter 1
-    for path_entry in $PATH
-        echo "[$counter] $path_entry"
-        set counter (math $counter + 1)
-    end
 end
