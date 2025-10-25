@@ -62,6 +62,7 @@
 /.config/wezterm
 /.config/xournalpp
 /.config/zathura
+/.config/zed/personal-settings.json
 /.config/zed/prompts
 /.config/zellij
 /.cursor

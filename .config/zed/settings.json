@@ -1,14 +1,23 @@
 // Zed settings
 //
-// For information on how to configure Zed, see the Zed
 // documentation: https://zed.dev/docs/configuring-zed
-//
-// To see all of Zed's default settings without changing your
-// custom settings, run `zed: open default settings` from the
-// command palette (cmd-shift-p / ctrl-shift-p)
 {
+    "agent": {
+        "always_allow_tool_actions": true,
+        "default_model": {
+            "provider": "zed.dev",
+            "model": "claude-sonnet-4-5-thinking"
+        },
+        "model_parameters": [ ]
+    },
+    "format_on_save": "off",
     "terminal": {
-        "font_size": 11.0
+        "font_size": 11.0,
+        "shell": { "program": "/usr/bin/fish" },
+        "env": {
+            "MODULAR_DERIVED_PATH": "/home/jack/src/modular/.derived"
+        }
+        // "font_family": "Hack Nerd Font"
     },
     "telemetry": {
         "diagnostics": false,
@@ -25,10 +34,6 @@
     },
     "cursor_shape": "bar",
     "cursor_blink": false,
-    "file_types": {
-        "i3": ["config"],
-        "Mojo": ["mojo", "🔥"]
-    },
     "show_whitespaces": "all",
     "show_edit_predictions": true,
     "remove_trailing_whitespace_on_save": true,
@@ -44,5 +49,14 @@
         "light": "One Light",
         "dark": "Tokyo Night"
     },
-    "enable_language_server": true
+    "enable_language_server": true,
+    "languages": {
+        "Mojo": {
+            "enable_language_server": true,
+            "language_servers": [ "mojo-lsp-server" ]
+        }
+    },
+    "inlay_hints": {
+        "enabled": true
+    },
 }

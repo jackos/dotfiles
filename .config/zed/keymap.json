@@ -1,23 +1,18 @@
 // Zed keymap
 //
-// For information on binding keys, see the Zed
 // documentation: https://zed.dev/docs/key-bindings
-//
-// To see the default key bindings run `zed: open default keymap`
-// from the command palette.
 [
     {
-        "context": "Editor"
-    },
-    {
+        // Uinversal
         "bindings": {
+            "alt-e": "editor::ToggleFocus",
+            "alt-x": "zed::Extensions",
+            "alt-t": "terminal_panel::ToggleFocus",
             "ctrl-s": "workspace::Save",
             "ctrl-shift-p": "command_palette::Toggle",
             "ctrl-p": "file_finder::Toggle",
             "ctrl-h": "pane::ActivatePreviousItem",
             "ctrl-l": "pane::ActivateNextItem",
-            "alt-t": "terminal_panel::ToggleFocus",
-            "alt-e": "project_panel::ToggleFocus",
             "alt-k": "workspace::ActivatePaneUp",
             "alt-j": "workspace::ActivatePaneDown",
             "alt-l": "workspace::ActivatePaneRight",
@@ -26,11 +21,41 @@
             "alt-shift-j": "pane::SplitDown",
             "ctrl-w": "pane::CloseActiveItem",
             "alt-w": "pane::CloseActiveItem",
-            "alt-c": "agent::ToggleFocus",
             "alt-f": "workspace::ToggleZoom",
             "ctrl-shift-m": "editor::SelectNext",
             "ctrl-alt-shift-m": "editor::SelectAllMatches",
+            "alt-m": "zed::OpenKeymapFile",
+            "alt-s": "zed::OpenSettingsFile",
+            "alt-i": "editor::Hover"
+        }
+    },
+    {
+        "context": "Editor",
+        "bindings": {
+            "alt-p": "project_panel::ToggleFocus",
+            "alt-a": "agent::ToggleFocus",
+            "alt-c": "editor::ToggleComments"
+        }
+    },
+    {
+        "context": "Editor && vim_mode == normal",
+        "bindings": {
             "shift-u": "vim::Redo"
+        }
+    },
+    {
+        "context": "ProjectPanel && not_editing",
+        "bindings": {
+            "alt-a": "agent::ToggleFocus",
+            "alt-t": "terminal_panel::ToggleFocus",
+            "a": "project_panel::NewFile",
+        }
+    },
+    {
+        "context": "Terminal",
+        "bindings": {
+            "alt-a": "agent::ToggleFocus",
+            "alt-p": "project_panel::ToggleFocus",
         }
     }
 ]
