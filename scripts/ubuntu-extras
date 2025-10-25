@@ -3,9 +3,9 @@
 # Update packages and install cmake/ninja
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y cmake
+sudo apt install -y cmake ninja-build
 
-# Install Lazygit
+# Install latest version of lazygit (fully static Go-compiled single binary)
 LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
 ARCH=$(uname -m)
 if [ "$ARCH" = "x86_64" ]; then
@@ -16,23 +16,26 @@ else
     echo "Unsupported architecture: $ARCH"
     exit 1
 fi
+
 curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_${LAZYGIT_ARCH}.tar.gz"
 tar xf lazygit.tar.gz lazygit
 sudo install lazygit /usr/local/bin
 rm lazygit.tar.gz lazygit
 
-# Install fzf
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-yes | ~/.fzf/install
-
-# Install rustup and eza from cargo
+# Install rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source "$HOME/.cargo/env"
 
-cargo install eza fd-find ripgrep bat
+# Build latest versions of Rust CLI tools from source
+#   - fd-find (fd): faster vesion of find
+#   - ripgrep (rg): faster version grep
+#   - eza         : ls and tree replacement with pretty output
+#   - bat         : like cat but with useful features such as syntax highlighting
+#   - skim (sk)   : fuzzy finder with preview support using bat
+cargo install eza fd-find ripgrep bat skim
 cargo install --git https://github.com/fish-shell/fish-shell
 
-# Install uv and ruff
+# Install uv and ruff globally
 curl -LsSf https://astral.sh/uv/install.sh | sh
 echo 'uv generate-shell-completion fish | source' >~/.config/fish/completions/uv.fish
 source $HOME/.local/bin/env

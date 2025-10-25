@@ -1,10 +1,15 @@
+# Remove fish greeting and enable <esc> to activate vi mode
 set fish_greeting
 fish_vi_key_bindings
 
-# Fish history configuration - increase history size
-set -g fish_history_max_entries 100000000  # Maximum number of history entries (default is ~256000)
-set -g fish_history_ignore_duplicates 1 # Ignore duplicate entries
+###################
+# Global env vars
+###################
 
+set -g fish_history_max_entries 100000000 
+set -g fish_history_ignore_duplicates 1
+
+# Avoid some remote environments automatically setting these
 set -e GIT_COMITTER_NAME
 set -e GIT_AUTHOR_NAME
 set -e GIT_AUTHOR_EMAIL
@@ -16,11 +21,28 @@ set -gx GIT_EDITOR $EDITOR --wait
 # Default the version of node nvm uses
 set -U nvm_default_version 24.10.0
 
-# Alias general
-alias code="code"
+# Set SHELL env var to fish for systems where default
+# shell can't be changed (e.g. remote instances)
+set -gx SHELL (which fish)
+
+##################
+# Aliases
+##################
+
+# List files and tree commands with pretty output
+alias ls='eza -lh --group-directories-first --icons=auto'
+alias lsa='ls -a'
+alias lt='eza --tree --level=2 --long --icons --git'
+alias lta='lt -a'
+
+# Fuzzy find files with preview, yank to clipboard
+alias ff='fzf --preview "bat --color=always --style=numbers --line-range=:500 {}" || yy'
+
+# Open the file in your editor after pressing enter
+alias ffo='$EDITOR (fd . | sk -m --preview "bat --color=always --style=numbers --line-range=:500 {}")'
+
+# Lazygit shortcut
 alias lg="lazygit"
-alias yy="xsel --clipboard --input"
-alias pp="xsel --clipboard --output"
 
 # Config files
 alias v="$EDITOR ~/vimwiki/index.md"
@@ -37,63 +59,29 @@ alias cn="$EDITOR ~/.config/nvim"
 alias cx="$EDITOR ~/.xinitrc"
 alias cz="$EDITOR ~/.config/zellij/config.yaml"
 
-# Mojo
-alias mr="mojo run"
-alias mb="mojo build"
-alias mp="mojo package"
-alias ms="bazel run //:mojo-stdlib"
-alias msh="bazel build @mojo//:shmem"
-
-# Function to build and run Mojo file with MPI
-function mrun -d "Build Mojo file and run with MPI on all GPUs"
-    if test (count $argv) -ne 1
-        echo "Usage: mrun <filename.mojo>"
-        return 1
-    end
-    
-    set -l mojo_file $argv[1]
-    set -l base_name (basename $mojo_file .mojo)
-    
-    # Get number of GPUs
-    set -l num_gpus (nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
-    
-    echo "Building $mojo_file..."
-    mojo build $mojo_file
-    
-    if test $status -eq 0
-        echo "Running $base_name on $num_gpus GPUs..."
-        mpirun -n $num_gpus ./$base_name
-    else
-        echo "Build failed!"
-        return 1
-    end
-end
-
+# Linux specific
 switch (uname)
     case Linux
-        # general
-        alias fd="fdfind"
-        # arch linux
+        # Install package
+        alias s="yay -S"
+        # Install package while fully upgrading and downgrading all packages
+        alias u="yay -Syuu"
+        # Remove package, dependenices, and configuration files
+        alias r="yay -Rns"
+        # Backup current packages
         alias po="pacman -Qqe >~/pacman.pkg"
-        alias s="sudo pacman -S"
-        alias u="sudo pacman -Syuu"
-        alias r="sudo pacman -Rns"
+        # Update to fastest mirrors when changing locations, will take a while,
         alias relector-update="sudo reflector --verbose --latest 200 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist"
 
-        # systemd
-        alias mod="xmodmap ~/.Xmodmap"
-        alias sdaemon="sudo systemctl daemon-reload"
-        alias sudaemon="sudo systemctl --user daemon-reload"
-        alias sstatus="sudo systemctl status"
-        alias senable="sudo systemctl enable"
-        alias suenable="systemctl --user enable"
-        alias sustatus="systemctl --user status"
-        alias srestart="sudo systemctl restart"
-        alias surestart="systemctl --user restart"
-        alias ss="sudo systemctl start"
-        alias sus="systemctl --user start"
-        alias sstop="sudo systemctl stop"
-        alias sustop="systemctl --user stop"
+        # systemd aliases
+        alias ss="sudo systemctl"
+        alias su="systemctl --user"
+
+        alias ssr="ss restart"
+        alias sur="su restart"
+
+        alias sd="ss daemon-reload"
+        alias sud="sudo systemctl --user daemon-reload"
 end
 
 ##################
@@ -138,6 +126,7 @@ function format_duration -d "Format duration in milliseconds to human-readable t
     end
 end
 
+# Prompt with vi/ssh status, git-aware dir, and time last command took to run
 function fish_prompt
     # Check if we're in an SSH session
     if set -q SSH_CLIENT; or set -q SSH_TTY
@@ -177,4 +166,112 @@ function fish_prompt
     set -l duration (format_duration)
     echo -s (set_color green) " $duration" (set_color normal)
     echo
+end
+
+###################
+# Utility Functions
+###################
+
+# Copy piped input to system clipboard using OSC 52 escape sequence
+function yy
+    if not isatty stdin
+        read -z input
+        printf "\033]52;c;%s\a" (printf "%s" "$input" | base64 | tr -d '\n')
+    else
+        printf "Pipe to system clipboard.\n\nUsage:\n  echo [ouptut] | yy" >&2
+        return 1
+    end
+end
+
+# remove path from user paths added with 'fish_add_path'
+function fish_remove_path
+    echo "Current fish_user_path entries:"
+    echo "===================="
+
+    set -l counter 1
+    for path_entry in $fish_user_paths
+        echo "[$counter] $path_entry"
+        set counter (math $counter + 1)
+    end
+
+    echo ""
+    read -P "Enter number to remove (or 'q' to quit): " choice
+
+    if test "$choice" = q
+        echo "Exiting..."
+        return 0
+    end
+
+    # Validate input is a number
+    if not string match -qr '^\d+$' "$choice"
+        echo "Error: Please enter a valid number"
+        return 1
+    end
+
+    set -l total (count $PATH)
+
+    if test $choice -gt $total -o $choice -lt 1
+        echo "Error: Number must be between 1 and $total"
+        return 1
+    end
+
+    set -l path_to_remove $fish_user_paths[$choice]
+    echo ""
+    echo "Removing fish user path: $path_to_remove"
+    echo ""
+
+    # Try fish_add_path -r first (works for paths added with fish_add_path)
+    if set -e fish_user_paths[$choice] 2>/dev/null
+        echo "✓ Successfully removed with fish_add_path"
+        return
+    else
+        echo "fish path removal failed"
+    end
+end
+
+# list all paths in system PATH
+function fish_list_paths
+    echo "Current PATH entries:"
+    echo "===================="
+
+    set -l counter 1
+    for path_entry in $PATH
+        echo "[$counter] $path_entry"
+        set counter (math $counter + 1)
+    end
+end
+
+###################
+# Mojo programming
+###################
+
+set -gx DISABLE_CHDIR 1
+alias mr="mojo run"
+alias mb="mojo build"
+alias mp="mojo package"
+alias ms="bazel run //:mojo-stdlib"
+
+# Function to build and run Mojo file with MPI
+function mrun -d "Build Mojo file and run with MPI on all GPUs"
+    if test (count $argv) -ne 1
+        echo "Usage: mrun <filename.mojo>"
+        return 1
+    end
+    
+    set -l mojo_file $argv[1]
+    set -l base_name (basename $mojo_file .mojo)
+    
+    # Get number of GPUs
+    set -l num_gpus (nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
+    
+    echo "Building $mojo_file..."
+    mojo build $mojo_file
+    
+    if test $status -eq 0
+        echo "Running $base_name on $num_gpus GPUs..."
+        mpirun -n $num_gpus ./$base_name
+    else
+        echo "Build failed!"
+        return 1
+    end
 end
