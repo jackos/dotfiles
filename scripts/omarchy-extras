@@ -1,4 +1,25 @@
 #!/bin/bash
 
-# Sync upgrade/downgrade and install packages omarchy doesn't come with
-yay -Syuu --noconfirm google-chrome fish keyd uv
+# First install paru which is more maintained then yay:
+if ! command -v paru &> /dev/null; then
+    cd ~/.local
+    git clone https://aur.archlinux.org/paru.git
+    cd paru
+    makepkg -si
+fi
+
+# Remove packages from ~/scripts/omarchy-unrequired-deps
+while read -r dependency; do
+    [[ -z "$dependency" || "$dependency" =~ ^# ]] && continue
+    paru --noconfirm -Rns "$dependency"
+done < omarchy-remove-deps
+
+# pacman flags:
+#   n: remove all config and backup files
+#   s: also remove dependencies
+
+# Install everything in ~/scripts/arch-deps
+sed '/^#/d;/^$/d' arch-deps | paru -Syuu --needed -
+# pacman flags:
+#   y: force download of new package database
+#   uu: also upgrade and downgrade all packages as required

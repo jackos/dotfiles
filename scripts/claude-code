@@ -1,10 +1,8 @@
 #!/bin/fish
 
-nvm install latest
-nvm use latest
+nvm install 24.10.0
+nvm use 24.10.0
 npm install -g @anthropic-ai/claude-code
 
-# Find npm path and add its directory to fish path
-set npm_path (which npm)
-set npm_dir (dirname $npm_path)
-fish_add_path $npm_dir
+# Default the version of node nvm uses
+set -U nvm_default_version 24.10.0

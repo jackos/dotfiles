@@ -1,0 +1,49 @@
+# replaced with rustup for managing multiple toolchains
+rust
+
+# AUR helper replaced by paru, yay creator moved to this and it's more active
+yay
+
+# application launcher replaced by rofi, walker has ~2 second lag on my machine
+walker-bin
+
+# kubernetes manager
+argo-bin
+
+# send files across network
+localsend-bin
+
+# manage programming toolchains. replaced by rustup, nvm, uv
+mise
+
+# replaced with google-chrome
+omarchy-chromium
+
+# markdown note-keeping, replaced by standard text editor wth markdown links
+obsidian
+
+# notetaking
+xournalpp
+
+# markdown editor, replaced by standard text editor
+typora
+
+# terminal prompt, replaced by simple fish config
+starship
+
+# secure messaging
+signal-desktop
+
+# already comes with eza which replaces it
+tree
+
+# not sure what these are for
+python-poetry-core
+python-terminaltexteffects
+
+# screen-recorders, replaced by obs
+wf-recorder
+wl-screenrec
+
+# replaced by python repl
+gnome-calculator

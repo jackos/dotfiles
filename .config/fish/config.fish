@@ -14,12 +14,10 @@ set -e GIT_COMITTER_NAME
 set -e GIT_AUTHOR_NAME
 set -e GIT_AUTHOR_EMAIL
 
+# Default editor settings
 set -gx EDITOR code
 set -gx VISUAL $EDITOR
 set -gx GIT_EDITOR $EDITOR --wait
-
-# Default the version of node nvm uses
-set -U nvm_default_version 24.10.0
 
 # Set SHELL env var to fish for systems where default
 # shell can't be changed (e.g. remote instances)
@@ -35,53 +33,38 @@ alias lsa='ls -a'
 alias lt='eza --tree --level=2 --long --icons --git'
 alias lta='lt -a'
 
-# Fuzzy find files with preview, yank to clipboard
-alias ff='fzf --preview "bat --color=always --style=numbers --line-range=:500 {}" || yy'
-
-# Open the file in your editor after pressing enter
-alias ffo='$EDITOR (fd . | sk -m --preview "bat --color=always --style=numbers --line-range=:500 {}")'
+# Fuzzy find files and open in your editor after pressing enter
+alias ff='$EDITOR (fd . | sk -m --preview "bat --color=always --style=numbers --line-range=:500 {}")'
 
 # Lazygit shortcut
 alias lg="lazygit"
 
-# Config files
+# shortcut to notes index file
 alias v="$EDITOR ~/vimwiki/index.md"
-alias cw="$EDITOR ~/.config/wezterm/wezterm.lua"
+
+# Config files
 alias ca="$EDITOR ~/.config/alacritty/alacritty.toml"
 alias cf="$EDITOR ~/.config/fish/config.fish"
-alias cne="$EDITOR ~/.config/nushell/env.nu"
-alias ci="$EDITOR ~/.config/i3/config"
 alias cl="$EDITOR ~/.config/lazygit/config.yml"
-alias cs="$EDITOR ~/.config/sway/config"
-alias cm="$EDITOR ~/.config/nvim/lua/config/keymaps.vim"
-alias ch="$EDITOR ~/.config/helix"
-alias cn="$EDITOR ~/.config/nvim"
-alias cx="$EDITOR ~/.xinitrc"
-alias cz="$EDITOR ~/.config/zellij/config.yaml"
+alias ch="$EDITOR ~/.config/hypr/bindings.conf"
 
-# Linux specific
-switch (uname)
-    case Linux
-        # Install package
-        alias s="yay -S"
-        # Install package while fully upgrading and downgrading all packages
-        alias u="yay -Syuu"
-        # Remove package, dependenices, and configuration files
-        alias r="yay -Rns"
-        # Backup current packages
-        alias po="pacman -Qqe >~/pacman.pkg"
-        # Update to fastest mirrors when changing locations, will take a while,
-        alias relector-update="sudo reflector --verbose --latest 200 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist"
+# paru aliases (AUR helper) only if installed
+if type -q paru
+    alias s="paru -S"
+    alias u="paru -Syuu"
+    alias r="paru -Rns"
+    alias d="paru -Si"
+    alias pb="paru -Qqe >~/arch-packages-backup.txt"
+end
 
-        # systemd aliases
-        alias ss="sudo systemctl"
-        alias su="systemctl --user"
-
-        alias ssr="ss restart"
-        alias sur="su restart"
-
-        alias sd="ss daemon-reload"
-        alias sud="sudo systemctl --user daemon-reload"
+# systemd aliases only if systemctl is available
+if type -q systemctl
+    alias ss="sudo systemctl"
+    alias su="systemctl --user"
+    alias ssr="ss restart"
+    alias sur="su restart"
+    alias ssd="ss daemon-reload"
+    alias sud="sudo systemctl --user daemon-reload"
 end
 
 ##################
@@ -178,7 +161,7 @@ function yy
         read -z input
         printf "\033]52;c;%s\a" (printf "%s" "$input" | base64 | tr -d '\n')
     else
-        printf "Pipe to system clipboard.\n\nUsage:\n  echo [ouptut] | yy" >&2
+        printf "Pipe to system clipboard.\n\nUsage:\n  echo [input] | yy" >&2
         return 1
     end
 end
@@ -245,33 +228,38 @@ end
 # Mojo programming
 ###################
 
-set -gx DISABLE_CHDIR 1
-alias mr="mojo run"
-alias mb="mojo build"
-alias mp="mojo package"
-alias ms="bazel run //:mojo-stdlib"
+# Only activate mojo aliases if script at ~/mojo.fish exists
+if test -f ~/mojo.fish;
+    set -gx DISABLE_CHDIR 1
+    source ~/mojo.fish
 
-# Function to build and run Mojo file with MPI
-function mrun -d "Build Mojo file and run with MPI on all GPUs"
-    if test (count $argv) -ne 1
-        echo "Usage: mrun <filename.mojo>"
-        return 1
-    end
-    
-    set -l mojo_file $argv[1]
-    set -l base_name (basename $mojo_file .mojo)
-    
-    # Get number of GPUs
-    set -l num_gpus (nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
-    
-    echo "Building $mojo_file..."
-    mojo build $mojo_file
-    
-    if test $status -eq 0
-        echo "Running $base_name on $num_gpus GPUs..."
-        mpirun -n $num_gpus ./$base_name
-    else
-        echo "Build failed!"
-        return 1
+    alias mr="mojo run"
+    alias mb="mojo build"
+    alias mp="mojo package"
+    alias ms="bazel run //:mojo-stdlib"
+
+    # Function to build and run Mojo file with MPI
+    function mrun -d "Build Mojo file and run with MPI on all GPUs"
+        if test (count $argv) -ne 1
+            echo "Usage: mrun <filename.mojo>"
+            return 1
+        end
+        
+        set -l mojo_file $argv[1]
+        set -l base_name (basename $mojo_file .mojo)
+        
+        # Get number of GPUs
+        set -l num_gpus (nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
+        
+        echo "Building $mojo_file..."
+        mojo build $mojo_file
+        
+        if test $status -eq 0
+            echo "Running $base_name on $num_gpus GPUs..."
+            mpirun -n $num_gpus ./$base_name
+        else
+            echo "Build failed!"
+            return 1
+        end
     end
 end

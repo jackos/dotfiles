@@ -1,0 +1,425 @@
+# arch linux packages
+# to install packages in this file and strip comments,
+# run the below command replacing paru with your AUR helper:
+
+# sed '/^#/d;/^$/d' arch-packages.txt | paru -S --needed -
+
+###############################
+# major components
+###############################
+
+# wayland display server
+uwsm
+
+# window manager and compositor
+# TODO: try niri
+hypridle
+hyprland
+hyprland-qtutils
+hyprlock
+hyprpicker
+hyprshot
+hyprsunset
+
+# status bar
+waybar
+
+# application launcher
+rofi
+rofi-emoji
+
+# shell
+fish
+
+# terminal emulator
+alacritty
+
+# bootloader
+limine
+limine-mkinitcpio-hook
+limine-snapper-sync
+
+###############################
+# daemons
+###############################
+
+# global key remapping
+keyd
+
+# notifications
+mako
+
+# display volume etc
+swayosd
+
+# make power profiles available over dbus
+power-profiles-daemon
+
+# clipboard helpers
+wl-clip-persist
+wl-clipboard
+
+###############################
+# CLI
+###############################
+
+# replaces ls and tree with prettier outputs
+eza
+
+# replaces cat and less, with helpful features such as syntax highlighting
+bat
+
+# display system information, replaces unmaintained neofetch
+fastfetch
+
+# faster version of find
+fd
+
+# fuzzy finder with preview
+skim
+
+# faster version of grep
+ripgrep
+
+# switch directories without full paths
+zoxide
+
+# list file directory with space used
+dust
+
+# count lines of code, much faster than cloc
+tokei
+
+# VPN
+nordvpn-bin
+
+# control screen brightness
+brightnessctl
+asdcontrol-git
+
+# docker
+docker
+docker-buildx
+docker-compose
+
+# convert .deb to arch packages
+debtap
+
+# modify EFI boot manager
+efibootmgr
+
+# cloud providers
+aws-cli-bin
+
+# networking
+inetutils
+
+# benchmarking
+hyperfine
+
+# json parsing and editing
+jq
+
+# xml parsing and editing
+xmlstarlet
+
+# read manuals for linux tools
+man-db
+
+# scripts and tools for pacman
+pacman-contrib
+
+# control media players such as spotify
+playerctl
+
+# find files very fast, database updated by cronjob
+plocate
+
+# keyring
+gnome-keyring
+
+# get region coordinates from wayland compositor
+slurp
+
+# manager filesystem snapshots
+snapper
+
+# wallpaper tool
+swaybg
+
+# nice quick examples for using CLI tools
+tldr
+
+# timezone based on IP geolocation
+tzupdate
+
+# firewall manager
+ufw
+ufw-docker
+
+# create bootable usb with multiple OS's on the same drive
+ventoy-bin
+
+# compressed archives
+unzip
+
+# download files
+wget
+
+# query domain names, IP addresses, etc.
+whois
+
+# swap space
+zram-generator
+
+# enables file explorer to display video thumbnails
+ffmpegthumbnailer
+
+###############################
+# TUI
+###############################
+
+# Wifi managers
+impala
+
+# process manager
+btop
+
+# gpu process manager
+nvtop
+
+# git manager
+lazygit
+
+# docker manager
+lazydocker
+
+# email manager
+neomutt
+
+###############################
+# GUI
+###############################
+
+# password manager
+1password-beta
+1password-cli
+
+# browsers
+brave-bin
+google-chrome
+
+# bluetooth manager
+blueberry
+
+# document viewer
+evince
+
+# document editor
+libreoffice-fresh
+
+# media player
+mpv
+
+# file manager
+nautilus
+sushi
+
+# screen recording
+obs-studio
+
+# torrent sharing
+qbittorrent
+
+# manage and use printers
+system-config-printer
+
+###############################
+# programming
+###############################
+
+# compiler backend
+llvm
+openmp
+
+# C/C++
+clang
+gcc14
+cmake
+ninja
+musl
+
+# javascript
+npm
+
+# python
+uv
+
+# rust
+rustup
+
+# AI
+claude-code
+
+# editors
+visual-studio-code-bin
+zed
+neovim
+
+# remote ssh
+coder-bin
+
+# git related
+git
+github-cli
+
+# manage lua modules
+luarocks
+
+# GPU
+cuda
+nsight-systems
+
+# faster linker than ld/ldd
+mold
+
+# syntax highlighting
+tree-sitter-cli
+
+# html builds and live server with wasm and hot-reload support
+trunk
+
+###############################
+# dependencies
+###############################
+
+# arch linux
+base
+base-devel
+linux
+linux-firmware
+linux-headers
+
+# printing
+cups
+cups-browsed
+cups-filters
+cups-pdf
+
+# graphing tool
+gnuplot
+
+# filesystem
+btrfs-progs
+gvfs-mtp
+gvfs-smb
+ntfs-3g
+
+# networking
+iwd
+libnl1
+
+# video
+guvcview
+
+# audio
+gst-plugin-pipewire
+libpulse
+pamixer
+pipewire
+pipewire-alsa
+pipewire-jack
+pipewire-pulse
+wiremix
+wireplumber
+sof-firmware
+
+# GUI
+kvantum-qt5
+qt5-wayland
+egl-wayland
+xdg-desktop-portal-gtk
+xdg-desktop-portal-hyprland
+fcitx5
+fcitx5-gtk
+fcitx5-qt
+gnome-themes-extra
+
+# CLI text-based user interfaces
+lib32-ncurses5-compat-libs
+
+# Calculator dependency?
+libqalculate
+
+# file types
+libxml2-2.9
+
+# SQL database management
+mariadb-libs
+postgresql-libs
+
+# fonts
+fontconfig
+noto-fonts
+noto-fonts-cjk
+noto-fonts-emoji
+noto-fonts-extra
+woff2-font-awesome
+ttf-cascadia-mono-nerd
+ttf-hack-nerd
+ttf-ia-writer
+ttf-jetbrains-mono-nerd
+yaru-icon-theme
+
+# python bindings for GTK
+python-gobject
+
+# music and podcasts
+spotify
+
+# hostname resolution
+nss-mdns
+
+# privilege escalating
+polkit-gnome
+
+###############################
+# yet to explore
+###############################
+
+# Shell script helper
+gum
+
+# Image viewers and editors
+imagemagick
+pinta
+imv
+
+# screenshot annotation
+satty
+
+# video editor
+kdenlive
+
+# boot splash screen
+# TODO: try removing this to see if anything breaks
+plymouth
+
+#################################
+# manually installed with makepkg
+#################################
+
+# paru
+# paru-debug
+
+
+######################################
+# let omarchy select based on hardware
+######################################
+
+# intel-ucode
+# nvidia gpu
+# lib32-nvidia-utils
+# nvidia-open-dkms
+# nvidia-utils
+# libva-nvidia-driver

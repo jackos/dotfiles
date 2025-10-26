@@ -43,6 +43,10 @@
 /.config/ibus
 /.config/joshuto
 /.config/karabiner
+/.config/kdenlive-layoutsrc
+/.config/kdenliverc
+/.config/lazydocker
+/.config/libreoffice/4
 /.config/mako
 /.config/mise
 /.config/neofetch
@@ -104,6 +108,7 @@
 /Downloads
 /init-workspace.sh
 /Library
+/m.fish
 /Movies
 /Music
 /Pictures
