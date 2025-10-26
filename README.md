@@ -21,7 +21,11 @@ If you're happy with both you can run:
 
 Window management keybindings are remapped to be vi style e.g. `SUPER+h = focus window left`, and workspaces are assigned to more easily accessible keys e.g. `i o p`. See [.config/hypr/bindings.conf](.config/hypr/bindings.conf) for all remappings.
 
-Repeat delay/rate is greatly reduced/increased in [.config/hypr/input.conf](.config/hypr/input.conf). This may be too fast for you, so modify as required.
+I removed sourcing the default files and put all config except keybindings in [.config/hypr/hyprland.conf](.config/hypr/hyprland.conf)
+
+## Application launcher
+
+I found walker to be really slow with 1-2 seconds lag, so replaced with rofi. Doesn't use theme switcher, but is styled nicely and based on tokyo-night colors.
 
 ## Fish
 

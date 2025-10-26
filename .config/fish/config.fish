@@ -46,7 +46,8 @@ alias v="$EDITOR ~/vimwiki/index.md"
 alias ca="$EDITOR ~/.config/alacritty/alacritty.toml"
 alias cf="$EDITOR ~/.config/fish/config.fish"
 alias cl="$EDITOR ~/.config/lazygit/config.yml"
-alias ch="$EDITOR ~/.config/hypr/bindings.conf"
+alias ch="$EDITOR ~/.config/hypr/hyprland.conf"
+alias ck="$EDITOR ~/.config/hypr/bindings.conf"
 
 # paru aliases (AUR helper) only if installed
 if type -q paru
