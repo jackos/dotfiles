@@ -398,8 +398,8 @@ satty
 # video editor
 kdenlive
 
-# boot splash screen
-# TODO: try removing this to see if anything breaks
+# boot splash screen, run command to get arch logo:
+# sudo plymouth-set-default-theme -R bgrt
 plymouth
 
 #################################
@@ -411,11 +411,11 @@ plymouth
 
 
 ######################################
-# let omarchy select based on hardware
+# Install optional
 ######################################
 
 # intel-ucode
-# nvidia gpu
+
 # lib32-nvidia-utils
 # nvidia-open-dkms
 # nvidia-utils

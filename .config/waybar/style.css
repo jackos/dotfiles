@@ -1,4 +1,5 @@
-@import "../omarchy/current/theme/waybar.css";
+@define-color foreground #cdd6f4;
+@define-color background #1a1b26;
 
 * {
   background-color: @background;
@@ -35,9 +36,7 @@
 #battery,
 #network,
 #bluetooth,
-#pulseaudio,
-#custom-omarchy,
-#custom-update {
+#pulseaudio{
   min-width: 12px;
   margin: 0 7.5px;
 }
