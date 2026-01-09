@@ -1,4 +1,6 @@
+.config/mozilla/firefox/Crash Reports
 .DS_Store
+.mozilla/firefox
 /.atuin
 /.aws
 /.bash_history
