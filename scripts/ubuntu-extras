@@ -1,9 +1,10 @@
 #!/bin/bash
+set -euo pipefail
 
-# Update packages and install cmake/ninja
+# Update packages and install build dependencies
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y cmake ninja-build
+sudo apt install -y cmake ninja-build build-essential autoconf automake libtool pkg-config
 
 # Install latest version of lazygit (fully static Go-compiled single binary)
 LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
@@ -26,17 +27,25 @@ rm lazygit.tar.gz lazygit
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source "$HOME/.cargo/env"
 
+# Install nightly toolchain
+rustup toolchain install nightly
+
 # Build latest versions of Rust CLI tools from source
 #   - fd-find (fd): faster vesion of find
 #   - ripgrep (rg): faster version grep
 #   - eza         : ls and tree replacement with pretty output
 #   - bat         : like cat but with useful features such as syntax highlighting
 #   - skim (sk)   : fuzzy finder with preview support using bat
-cargo install eza fd-find ripgrep bat skim
-cargo install --git https://github.com/fish-shell/fish-shell
+cargo +nightly install eza ripgrep bat fd-find skim
+
+# Install fish-shell from git
+cargo +nightly install --git https://github.com/fish-shell/fish-shell fish
 
 # Install uv and ruff globally
 curl -LsSf https://astral.sh/uv/install.sh | sh
 echo 'uv generate-shell-completion fish | source' >~/.config/fish/completions/uv.fish
 source $HOME/.local/bin/env
 uv tool install ruff
+
+# Install claude code
+curl -fsSL https://claude.ai/install.sh | bash
