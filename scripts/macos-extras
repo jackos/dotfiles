@@ -1,0 +1,32 @@
+#!/bin/bash
+set -euo pipefail
+
+# Update brew and install build dependencies
+brew update
+brew upgrade
+
+# Install build and CLI tools via brew
+#   - lazygit     : terminal UI for git
+#   - fd          : faster version of find
+#   - ripgrep (rg): faster version of grep
+#   - eza         : ls and tree replacement with pretty output
+#   - bat         : like cat but with syntax highlighting
+#   - skim (sk)   : fuzzy finder with preview support using bat
+#   - fish        : fish shell
+brew install cmake ninja autoconf automake libtool pkg-config lazygit fd ripgrep eza bat sk fish
+
+# Install rustup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+source "$HOME/.cargo/env"
+
+# Install nightly toolchain
+rustup toolchain install nightly
+
+# Install uv and ruff globally
+curl -LsSf https://astral.sh/uv/install.sh | sh
+echo 'uv generate-shell-completion fish | source' >~/.config/fish/completions/uv.fish
+source $HOME/.local/bin/env
+uv tool install ruff
+
+# Install claude code
+curl -fsSL https://claude.ai/install.sh | bash
