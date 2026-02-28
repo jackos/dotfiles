@@ -38,10 +38,32 @@ end
 
 map("n", "<S-u>", "<C-r>", { desc = "Redo", unpack(sn) })
 
+map("n", "<A-m>", function()
+  local t0 = vim.uv.hrtime()
+  local cursor = vim.fn.getcurpos()
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  vim.fn.writefile(lines, "/tmp/mdlab_input.md")
+  local result = vim.system({ "mdlab", "/tmp/mdlab_input.md" }):wait()
+  local t1 = vim.uv.hrtime()
+  if result.stderr and result.stderr ~= "" then
+    vim.notify(result.stderr, vim.log.levels.ERROR)
+  else
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(result.stdout, "\n", { plain = true }))
+    vim.fn.setpos(".", cursor)
+    vim.notify(string.format("mdlab compiled and ran in: %.1fms", (t1 - t0) / 1e6))
+  end
+end, { desc = "Process buffer with mdlab" })
+
 -- snacks
 map(all_modes, "<A-t>", function()
   Snacks.terminal()
 end, { desc = "Toggle Terminal" })
+
+map(all_modes, "<C-A-j>", function()
+  vim.cmd("enew | terminal")
+  vim.bo.buflisted = true
+  vim.cmd("startinsert")
+end, { desc = "New Terminal Buffer" })
 
 Snacks.toggle.zoom():map("<A-f>")
 
@@ -51,12 +73,9 @@ map("t", "<A-f>", "<C-\\><C-n>", { desc = "Overwrite zoom to exit terminal mode 
 
 map("n", "<A-S-l>", ":vsplit<CR>", { desc = "Split window right" })
 
-----------------------------------
--- not working
-map("t", "<A-S-l>", function()
-  Snacks.terminal(nil, { win = { split = "right" } })
-end, { desc = "Terminal in right split" })
-----------------------------------
+-- map("n", "<A-S-l>", function()
+--   Snacks.terminal.open()
+-- end, { desc = "New Terminal right" })
 
 map(all_modes, "<C-w>", function()
   Snacks.bufdelete()

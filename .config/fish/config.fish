@@ -6,7 +6,7 @@ fish_vi_key_bindings
 # Global env vars
 ###################
 
-set -g fish_history_max_entries 100000000 
+set -g fish_history_max_entries 100000000
 set -g fish_history_ignore_duplicates 1
 
 # Avoid some remote environments automatically setting these
@@ -15,7 +15,7 @@ set -e GIT_AUTHOR_NAME
 set -e GIT_AUTHOR_EMAIL
 
 # Default editor settings
-set -gx EDITOR code
+set -gx EDITOR nvim
 set -gx VISUAL $EDITOR
 set -gx GIT_EDITOR $EDITOR --wait
 
@@ -45,9 +45,11 @@ alias v="$EDITOR ~/vimwiki/index.md"
 # Config files
 alias ca="$EDITOR ~/.config/alacritty/alacritty.toml"
 alias cf="$EDITOR ~/.config/fish/config.fish"
+alias cg="$EDITOR ~/.config/ghostty/config"
 alias cl="$EDITOR ~/.config/lazygit/config.yml"
 alias ch="$EDITOR ~/.config/hypr/hyprland.conf"
 alias ck="$EDITOR ~/.config/hypr/bindings.conf"
+alias cn="$EDITOR ~/.config/nvim/lua"
 
 # paru aliases (AUR helper) only if installed
 if type -q paru
@@ -160,7 +162,9 @@ end
 function yy
     if not isatty stdin
         read -z input
-        printf "\033]52;c;%s\a" (printf "%s" "$input" | base64 | tr -d '\n')
+        printf "\033]52
+c
+%s\a" (printf "%s" "$input" | base64 | tr -d '\n')
     else
         printf "Pipe to system clipboard.\n\nUsage:\n  echo [input] | yy" >&2
         return 1
@@ -230,7 +234,8 @@ end
 ###################
 
 # Only activate mojo aliases if script at ~/mojo.fish exists
-if test -f ~/mojo.fish;
+if test -f ~/mojo.fish
+
     set -gx DISABLE_CHDIR 1
     source ~/mojo.fish
 
@@ -242,19 +247,19 @@ if test -f ~/mojo.fish;
     # Function to build and run Mojo file with MPI
     function mrun -d "Build Mojo file and run with MPI on all GPUs"
         if test (count $argv) -ne 1
-            echo "Usage: mrun <filename.mojo>"
+            echo "Usage: mrun <filename.mojo >"
             return 1
         end
-        
+
         set -l mojo_file $argv[1]
         set -l base_name (basename $mojo_file .mojo)
-        
+
         # Get number of GPUs
         set -l num_gpus (nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
-        
+
         echo "Building $mojo_file..."
         mojo build $mojo_file
-        
+
         if test $status -eq 0
             echo "Running $base_name on $num_gpus GPUs..."
             mpirun -n $num_gpus ./$base_name
