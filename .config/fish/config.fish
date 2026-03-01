@@ -50,6 +50,8 @@ alias cl="$EDITOR ~/.config/lazygit/config.yml"
 alias ch="$EDITOR ~/.config/hypr/hyprland.conf"
 alias ck="$EDITOR ~/.config/hypr/bindings.conf"
 alias cn="$EDITOR ~/.config/nvim/lua"
+alias cm="$EDITOR ~/.config/nvim/lua/config/keymaps.lua"
+alias ct="$EDITOR ~/.config/tmux/tmux.conf"
 
 # paru aliases (AUR helper) only if installed
 if type -q paru
