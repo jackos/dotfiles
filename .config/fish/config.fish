@@ -39,6 +39,16 @@ alias ff='$EDITOR (fd . | sk -m --preview "bat --color=always --style=numbers --
 # Lazygit shortcut
 alias lg="lazygit"
 
+# SSH to coder workspace with tmux
+function cx -d "Connect to coder workspace with tmux"
+    if test (count $argv) -lt 1
+        echo "Usage: cx <workspace> [session-name]"
+        return 1
+    end
+    set -l session (test (count $argv) -ge 2; and echo $argv[2]; or echo main)
+    ssh -t coder.$argv[1] "tmux new-session -As $session"
+end
+
 # shortcut to notes index file
 alias v="$EDITOR ~/vimwiki/index.md"
 
@@ -50,6 +60,8 @@ alias cl="$EDITOR ~/.config/lazygit/config.yml"
 alias ch="$EDITOR ~/.config/hypr/hyprland.conf"
 alias ck="$EDITOR ~/.config/hypr/bindings.conf"
 alias cn="$EDITOR ~/.config/nvim/lua"
+alias cm="$EDITOR ~/.config/nvim/lua/config/keymaps.lua"
+alias ct="$EDITOR ~/.config/tmux/tmux.conf"
 
 # paru aliases (AUR helper) only if installed
 if type -q paru

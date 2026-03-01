@@ -4,14 +4,36 @@ local all_modes = { "n", "t", "v", "i" }
 local sn = { silent = true, noremap = true }
 
 local keybindings_all_modes = {
-  { "<A-h>", "<C-w>h", "Focus window left" },
-  { "<A-j>", "<C-w>j", "Focus window below" },
-  { "<M-k>", "<C-w>k", "Focus window above" },
-  { "<A-l>", "<C-w>l", "Focus window right" },
   { "<A-S-j>", ":split<CR>", "Split window below" },
-  { "<C-h>", ":bprevious<CR>", "Previous Buffer" },
-  { "<C-l>", ":bnext<CR>", "Next buffer" },
 }
+
+local function listed_bufs()
+  local bufs = {}
+  for _, b in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.bo[b].buflisted then
+      table.insert(bufs, b)
+    end
+  end
+  return bufs
+end
+
+map(all_modes, "<C-l>", function()
+  local bufs = listed_bufs()
+  if vim.env.TMUX and (#bufs <= 1 or vim.api.nvim_get_current_buf() == bufs[#bufs]) then
+    vim.system({ "tmux", "next-window" })
+  else
+    vim.cmd("bnext")
+  end
+end, { desc = "Next buffer / tmux window", unpack(sn) })
+
+map(all_modes, "<C-h>", function()
+  local bufs = listed_bufs()
+  if vim.env.TMUX and (#bufs <= 1 or vim.api.nvim_get_current_buf() == bufs[1]) then
+    vim.system({ "tmux", "previous-window" })
+  else
+    vim.cmd("bprevious")
+  end
+end, { desc = "Previous buffer / tmux window", unpack(sn) })
 
 -- Copy file path
 vim.keymap.set("n", "<leader>yp", function()
@@ -23,9 +45,12 @@ vim.keymap.set("n", "<leader>yr", function()
   vim.fn.setreg("+", vim.fn.expand("%:p:."))
 end, { desc = "Copy relative file path" })
 
-map("n", "<A-w>", ":q<CR>", { desc = "Close window", unpack(sn) })
+map("n", "<A-w>", function()
+  if #vim.api.nvim_list_wins() > 1 then
+    vim.cmd("q")
+  end
+end, { desc = "Close window", unpack(sn) })
 map("t", "<A-w>", "exit<CR>", { desc = "Close termanal" })
-map("n", "<A-k>", "<C-w>k", { desc = "Focus window above" })
 map("n", "<A-i>", vim.lsp.buf.hover, { desc = "Hover Documentation" })
 
 vim.keymap.set("i", "<C-space>", function()
@@ -54,20 +79,13 @@ map("n", "<A-m>", function()
   end
 end, { desc = "Process buffer with mdlab" })
 
--- snacks
-map(all_modes, "<A-t>", function()
-  Snacks.terminal()
-end, { desc = "Toggle Terminal" })
-
-map(all_modes, "<C-A-j>", function()
-  vim.cmd("enew | terminal")
-  vim.bo.buflisted = true
-  vim.cmd("startinsert")
-end, { desc = "New Terminal Buffer" })
+-- -- snacks
+-- map(all_modes, "<A-t>", function()
+--   Snacks.terminal()
+-- end, { desc = "Toggle Terminal" })
 
 Snacks.toggle.zoom():map("<A-f>")
 
-map("t", "<A-k>", "<C-\\><C-n><C-w>k<C-w>l", { desc = "Window up and right from terminal" })
 map("t", "<A-esc>", "<C-\\><C-n>", { desc = "Exit terminal to normal mode" })
 map("t", "<A-f>", "<C-\\><C-n>", { desc = "Overwrite zoom to exit terminal mode first" })
 
@@ -78,8 +96,13 @@ map("n", "<A-S-l>", ":vsplit<CR>", { desc = "Split window right" })
 -- end, { desc = "New Terminal right" })
 
 map(all_modes, "<C-w>", function()
-  Snacks.bufdelete()
-end, { desc = "Delete Buffer", nowait = true })
+  local bufs = listed_bufs()
+  if #bufs <= 1 then
+    vim.cmd("qa")
+  else
+    Snacks.bufdelete()
+  end
+end, { desc = "Delete Buffer / Quit", nowait = true })
 
 map("n", "<leader>gf", function()
   Snacks.picker("git_log_file_diff")
@@ -89,14 +112,14 @@ end, { desc = "Diff file history" })
 local wk = require("which-key")
 
 wk.add({
-  { "<leader>m", group = "Modify Config Files" }, -- Group for config files
-  { "<leader>mm", ":edit ~/.config/nvim/lua/config/keymaps.lua<CR>", desc = "Neovim Keymaps" },
-  { "<leader>mf", ":edit ~/.config/fish/config.fish<CR>", desc = "Fish" },
-  { "<leader>ma", ":edit ~/.config/alacritty/alacritty.toml<CR>", desc = "Alacritty" },
-  { "<leader>ml", ":edit ~/.config/lazygit/config.yml<CR>", desc = "Lazygit" },
-  { "<leader>mg", ":edit ~/.gitconfig<CR>", desc = "Git" },
+  { "<leader>c", group = "Modify Config Files" }, -- Group for config files
+  { "<leader>cm", ":edit ~/.config/nvim/lua/config/keymaps.lua<CR>", desc = "Neovim Keymaps" },
+  { "<leader>cf", ":edit ~/.config/fish/config.fish<CR>", desc = "Fish" },
+  { "<leader>ca", ":edit ~/.config/alacritty/alacritty.toml<CR>", desc = "Alacritty" },
+  { "<leader>cl", ":edit ~/.config/lazygit/config.yml<CR>", desc = "Lazygit" },
+  { "<leader>cg", ":edit ~/.config/ghostty/config<CR>", desc = "Ghostty" },
   {
-    "<leader>mn",
+    "<leader>cn",
     function()
       require("snacks").picker.files({ cwd = vim.fn.stdpath("config") })
     end,
