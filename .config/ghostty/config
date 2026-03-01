@@ -60,8 +60,8 @@ window-decoration = true
 
 # Other
 confirm-close-surface = false
-clipboard_read = allow
-clipboard_write = allow
+clipboard-read = allow
+clipboard-write = allow
 
 # Window for macos
 # window-width = 200
