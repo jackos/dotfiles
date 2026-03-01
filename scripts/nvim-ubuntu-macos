@@ -1,24 +1,13 @@
-#!/usr/bin/fish
+#!/usr/bin/env fish
 
 # Neovim installation script for macOS and Linux using pre-built binaries
 
-set -l nvim_version "v0.10.2"
+set -l nvim_version "v0.11.6"
 set -l install_dir "$HOME/.local/nvim"
 
 # Detect OS and architecture
 set -l os (uname -s | tr '[:upper:]' '[:lower:]')
 set -l arch (uname -m)
-
-# Map architecture names
-switch $arch
-    case x86_64
-        set arch amd64
-    case aarch64 arm64
-        # Keep as is
-    case '*'
-        echo "Unsupported architecture: $arch"
-        exit 1
-end
 
 # Declare variables before switch
 set -l download_url
@@ -28,12 +17,12 @@ set -l extract_dir
 switch $os
     case darwin
         set download_url "https://github.com/neovim/neovim/releases/download/$nvim_version/nvim-macos-$arch.tar.gz"
-	echo "Installing on macos from: $download_url"
+        echo "Installing on macos from: $download_url"
         set extract_dir "nvim-macos-$arch"
     case linux
-        set download_url "https://github.com/neovim/neovim/releases/download/$nvim_version/nvim-linux64.tar.gz"
-        set extract_dir "nvim-linux64"
-	echo "Installing on linux from: $download_url"
+        set download_url "https://github.com/neovim/neovim/releases/download/$nvim_version/nvim-linux-$arch.tar.gz"
+        set extract_dir "nvim-linux-$arch"
+        echo "Installing on linux from: $download_url"
     case '*'
         echo "Unsupported operating system: $os"
         exit 1
@@ -50,8 +39,17 @@ mkdir -p (dirname $install_dir)
 rm -rf $install_dir
 mv $extract_dir $install_dir
 
-# Add to PATH
-fish_add_path "$install_dir/bin"
+# Create symbolic link to get it on PATH
+if test -e ~/.local/bin/nvim
+    read -l -P "~/.local/bin/nvim already exists. Overwrite? [y/N] " confirm
+    if test "$confirm" = y -o "$confirm" = Y
+        ln -sf "$install_dir/bin/nvim" ~/.local/bin/nvim
+    else
+        echo "Skipping symlink creation."
+    end
+else
+    ln -s "$install_dir/bin/nvim" ~/.local/bin/nvim
+end
 
 # Clean up
 rm nvim-*.tar.gz
