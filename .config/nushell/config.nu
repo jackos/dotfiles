@@ -16,13 +16,13 @@ let carapace_completer = {|spans: list<string>|
 }
 
 $env.config = {
-    buffer_editor: "/usr/bin/nvim"
+    buffer_editor: "nvim"
     edit_mode: vi
     show_banner: false
     history: {
         max_size: 100000000
         sync_on_enter: true
-        file_format: "plaintext"
+        file_format: "sqlite"
         isolation: false
     }
     completions: {
@@ -36,7 +36,7 @@ $env.config = {
 # Default editor settings.
 $env.EDITOR = "nvim"
 $env.VISUAL = $env.EDITOR
-$env.GIT_EDITOR = "nvim --wait"
+$env.GIT_EDITOR = "nvim"
 
 $env.path ++= [
     $"($env.HOME)/src/zig/build/stage3/bin"
@@ -86,6 +86,17 @@ def require-command [name: string] {
     }
 }
 
+# Clears out any commands that failed from history
+def clear-history-failures [] {
+    require-command sqlite3
+
+    let history_db = $"($env.HOME)/.config/nushell/history.sqlite3"
+    let deleted = (sqlite3 $history_db "SELECT count(*) FROM history WHERE exit_status = 1;" | into int)
+
+    sqlite3 $history_db "DELETE FROM history WHERE exit_status = 1; VACUUM;"
+    print $"cleared ($deleted) history rows with exit_status = 1"
+}
+
 # pacman and paru aliases
 alias s = sudo pacman -Syuu
 alias p = paru -Syuu
@@ -106,12 +117,10 @@ alias sud = su daemon-reload
 ##################
 
 # Displays time to run last command, formatted nicely depending on how long it took e.g. 2s 223ms
-$env.PROMPT_COMMAND = {||
-    let ms = if $env.CMD_DURATION_MS == "0823" { 0 } else { $env.CMD_DURATION_MS | into int }
-    if $ms < 1000 {
-      return $"(ansi cyan)(pwd)(ansi green) ($ms) ms(ansi reset)\n"
+$env.PROMPT_COMMAND_RIGHT = {||
+    let ms = if $env.CMD_DURATION_MS == "0823" { 0 } else { 
+      $env.CMD_DURATION_MS | into int 
     }
-
     let hours = ($ms / 3600000 | math floor)
     let minutes = (($ms mod 3600000) / 60000 | math floor)
     let seconds = (($ms mod 60000) / 1000 | math floor)
@@ -127,15 +136,13 @@ $env.PROMPT_COMMAND = {||
 
     let duration = $parts | str join " "
 
-    $"(ansi cyan)(pwd)(ansi green) ($duration)(ansi reset)\n"
+    return $"(ansi purple)^ took ($duration)"
 }
-$env.PROMPT_COMMAND_RIGHT = ""
-$env.PROMPT_INDICATOR_VI_INSERT = ""
-$env.PROMPT_INDICATOR_VI_NORMAL = "VI "
-$env.PROMPT_MULTILINE_INDICATOR = "COL "
-
-$env.TRANSIENT_PROMPT_COMMAND = ""
-$env.TRANSIENT_PROMPT_COMMAND_RIGHT = ""
+$env.TRANSIENT_PROMPT_COMMAND_RIGHT = null
+$env.TRANSIENT_PROMPT_INDICATOR_VI_INSERT = "\n"
+$env.PROMPT_INDICATOR_VI_INSERT = ": "
+$env.PROMPT_INDICATOR_VI_NORMAL = "V "
+$env.PROMPT_MULTILINE_INDICATOR = "C "
 
 ###################
 # Utility Functions
@@ -151,4 +158,3 @@ def yy [] {
 
     print --no-newline $"\u{1b}]52;c;($input | to text | encode base64)\u{07}"
 }
-

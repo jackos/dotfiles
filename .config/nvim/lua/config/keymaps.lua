@@ -67,22 +67,26 @@ map("n", "<A-m>", function()
   local t0 = vim.uv.hrtime()
   local cursor = vim.fn.getcurpos()
   local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-  vim.fn.writefile(lines, "/tmp/mdlab_input.md")
-  local result = vim.system({ "mdlab", "/tmp/mdlab_input.md" }):wait()
+  local input = table.concat(lines, "\n") .. "\n"
+  local result = vim.system({ "mdlab" }, { stdin = input }):wait()
   local t1 = vim.uv.hrtime()
-  if result.stderr and result.stderr ~= "" then
-    vim.notify(result.stderr, vim.log.levels.ERROR)
+  if result.code ~= 0 then
+    vim.notify(string.format("mdlab exit code %s:\n%s", result.code, result.stderr or ""), vim.log.levels.ERROR)
   else
     vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(result.stdout, "\n", { plain = true }))
     vim.fn.setpos(".", cursor)
-    vim.notify(string.format("mdlab compiled and ran in: %.1fms", (t1 - t0) / 1e6))
+    local message = string.format("mdlab compiled and ran in: %.1fms", (t1 - t0) / 1e6)
+    if result.stderr and result.stderr ~= "" then
+      message = message .. "\n" .. result.stderr
+    end
+    vim.notify(message)
   end
 end, { desc = "Process buffer with mdlab" })
 
--- -- snacks
--- map(all_modes, "<A-t>", function()
---   Snacks.terminal()
--- end, { desc = "Toggle Terminal" })
+-- snacks
+map(all_modes, "<A-t>", function()
+  Snacks.terminal()
+end, { desc = "Toggle Terminal" })
 
 Snacks.toggle.zoom():map("<A-f>")
 
@@ -107,6 +111,14 @@ end, { desc = "Delete Buffer / Quit", nowait = true })
 map("n", "<leader>gf", function()
   Snacks.picker("git_log_file_diff")
 end, { desc = "Diff file history" })
+
+map("n", "gs", function()
+  Snacks.picker.lsp_symbols({ filter = LazyVim.config.kind_filter })
+end, { desc = "LSP Symbols" })
+
+map("n", "gS", function()
+  Snacks.picker.lsp_workspace_symbols({ filter = LazyVim.config.kind_filter })
+end, { desc = "LSP Workspace Symbols" })
 
 -- which-key
 local wk = require("which-key")

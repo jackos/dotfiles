@@ -34,7 +34,6 @@
 /.config/fish/functions/fish_user_key_bindings.fish
 /.config/fontconfig
 /.config/gh
-/.config/ghostty
 /.config/git/ignore
 /.config/github-copilot
 /.config/go/telemetry/local
@@ -117,3 +116,7 @@
 /Videos
 /vimwiki
 /.tmux/plugins/tpm
+/.config/nushell/history.txt
+/.config/nushell/history.sqlite3
+/.config/nushell/history.sqlite3-shm
+/.config/nushell/history.sqlite3-wal

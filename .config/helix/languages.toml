@@ -5,6 +5,14 @@
 # [language-server]
 # mojo = { command = "mojo-lsp-server" }
 # rust = { command = "rust-analyzer" }
+# 
+use-grammars = { except = ["gotmpl"] }
+
+[[language]]
+name = "markdown"
+formatter = { command = "mdlab" }
+auto-format = true
+language-servers = ["markdown-oxide"]
 
 [[language]]
 name = "mojo"
@@ -21,9 +29,27 @@ name = "mojo"
 source = { git = "https://github.com/garam-kim1/tree-sitter-mojo.git", rev = "62b598275f340f5716d30943275f587398fe9ede" }
 
 
-oots = []
 [language-server.rust-analyzer.config.check]
 command = "clippy"
+
+[language-server.jails]
+command = "/home/jack/.local/bin/jails"
+
+[[language]]
+name = "jai"
+scope = "source.jai"
+file-types = ["jai"]
+comment-tokens = "//"
+indent = { tab-width = 4, unit = "    " }
+language-servers = ["jails"]
+grammar = "jai"
+roots = []
+
+[[grammar]]
+name = "jai"
+source = { path = "/home/jack/src/tree-sitter-jai" }
+
+
 # [language.debugger]
 # command = "codelldb"
 # name = "codelldb"
